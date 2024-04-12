@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from langchain_community.llms import Ollama
 
 # Initialize Ollama outside the view
-llm = Ollama(model="Eon_Assistant")
+llm = Ollama(model="mistral")
 conversation_history = []
 
 def ollama_generate_response(question):
