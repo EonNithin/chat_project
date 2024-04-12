@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Page</title>
+    <style>
+        body{
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Page</h1>
+    <div id="conversationHistory"></div> <!-- New div for conversation history -->
+    <form id="promptForm">
+        {% csrf_token %} 
+        <input type="textarea" id="question" name="question" placeholder="Enter your question here..."><br>
+        <button type="submit">Submit</button>
+    </form>
+ 
+    <script>
+        document.getElementById('promptForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var question = document.getElementById('question').value;
+            var formData = new FormData(this);
+            fetch('/generate_response/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('question').value = ''; // Clear input value
+                //document.getElementById('response').innerText = data.response;
+                updateConversationHistory(data.question); // question variable also contains same text as data.question
+                updateConversationHistory(data.response);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function updateConversationHistory(response) {
+            var conversationHistoryElement = document.getElementById('conversationHistory');
+            var currentHistory = conversationHistoryElement.innerText;
+            conversationHistoryElement.innerText = currentHistory + response + '\n\n';
+        }
+    </script>
+</body>
+</html>
