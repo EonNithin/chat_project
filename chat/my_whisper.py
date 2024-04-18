@@ -6,7 +6,7 @@ llm = Ollama(model="mistral")
 conversation_history = []
 
 model = whisper.load_model("base")
-result = model.transcribe("./chat/static/mp3s/books.mp3")
+result = model.transcribe("./chat/static/mp3s/blood.mp3")
 print("="*50, "\nText Response from Whisper :\n", "="*50, "\n", result["text"])
 result_text = result["text"]
 response_text = llm.invoke(result_text)

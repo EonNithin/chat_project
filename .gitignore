@@ -1,1 +1,6 @@
+/shelf/
+/workspace.xml
+
 __pycache__/*
+chat/__pycache__/*
+chat_project/__pycache__/*
