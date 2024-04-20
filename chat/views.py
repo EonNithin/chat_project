@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from langchain_community.llms import Ollama
 import whisper
-
+from django.conf import settings
 from chat_project import settings
 
 # Initialize Ollama outside the view
@@ -29,24 +29,19 @@ def generate_response(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def transcribe_mp3(request):
-    if request.method == 'POST' and request.FILES['file']:
-        # Save the uploaded file to a local folder
+    if request.method == 'POST' and request.FILES.get('file'):
+        # Save the uploaded file to the mp3s directory within MEDIA_ROOT
         uploaded_file = request.FILES['file']
-        print("Uploaded file path is :", uploaded_file)
-        file_path = os.path.join(settings.MEDIA_ROOT, 'mp3s', uploaded_file.name)
-        with open(file_path, 'wb') as destination:
-            for chunk in uploaded_file.chunks():
-                destination.write(chunk)
+        print("uploaded file:\n", uploaded_file, "\n")
+        
 
-        # Transcribe the saved file using Whisper
-        result = whisper.load_model("base").transcribe(file_path)
+    
+        # Implement the rest of your logic (transcription, etc.) here
 
-        # Invoke Ollama with the transcribed text
-        response_text = llm.invoke(result["text"])
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'error': 'No file uploaded'}, status=400)
 
-        return JsonResponse({'response_text': response_text})
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def whisper_response(request):
     # Implement your logic here if needed

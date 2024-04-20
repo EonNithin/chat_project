@@ -25,12 +25,16 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
         document.getElementById('transcribeBtn').disabled = true;
     }
 });
-
 document.getElementById('transcribeBtn').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent the default form submission
     var file = document.getElementById('fileInput').files[0];
     if (file) {
         var formData = new FormData();
         formData.append('file', file);
+        
+        // Add the CSRF token to the FormData
+        var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        formData.append('csrfmiddlewaretoken', csrfToken);
 
         fetch('/transcribe_mp3/', {
             method: 'POST',
