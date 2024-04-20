@@ -1,0 +1,8 @@
+
+<form id="promptForm">
+    {% csrf_token %} 
+    <div class="form-div">
+        <input type="file" id="fileInput" accept=".mp3">
+        <button id="transcribeBtn" class="btn btn-primary" disabled>Transcribe</button>
+    </div>
+</form>

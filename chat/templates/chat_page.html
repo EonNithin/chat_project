@@ -20,8 +20,11 @@
         <!-- Logo -->
         <img class="card-header-img" src="{% static 'images/eonbotlogo1.png' %}" alt="eonbotlogo">
         <div class="card-header-msg">
-            <p class="card-header-p1">EON AI Assistant</p>
+            <p class="card-header-p1">EON AI Chatbot</p>
             <p class="card-header-p2">Hi there! How can I help you?</p>
+        </div>
+        <div class="btn-whisper-response" id="btn-whisper-response">
+            <a href="{% url 'whisper_response' %}" class="btn btn-primary">Speech Recognition AI</a>
         </div>
     </div>
     
@@ -33,65 +36,14 @@
                 <span class="dot"></span>
                 <span class="dot"></span>
             </div>
+            </div>
+        </div>
+        <div class="form-div">
+            {% include "form.html" %}
         </div>
     </div>
-    <div class="form-div">
-        {% include "form.html" %}
-    </div>
-    </div>
 
-    <script>
-        function autoResize(textarea) {
-            textarea.style.height = "auto"; // Reset height to auto
-            textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; // Set height based on scrollHeight, limited to 300px
-            console.log("auto resizing");
-        }
-
-        // Function to scroll to the end of the content inside a div
-        function scrollToBottom() {
-            var conversationHistory = document.getElementById("cardBody");
-            conversationHistory.scrollTop = conversationHistory.scrollHeight;
-            console.log("scrolling to bottom");
-        }
-
-        document.getElementById('question').addEventListener('input', function() {
-            autoResize(this);
-        });
-
-        var dotsAnimation = document.getElementById('wave');
-        function startAnimation() {
-            dotsAnimation.style.display = 'inline'; // Make the animation visible
-        }
-
-        function stopAnimation() {
-            dotsAnimation.style.display = 'none';
-        }
-
-        document.getElementById('promptForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var question = document.getElementById('question').value;
-            document.getElementById('conversationHistory').innerHTML += '<span style="color: red; font-weight: bold;">' + question + '</span><br>';
-            setTimeout(scrollToBottom, 100);
-            startAnimation(); // Start the animation
-            var formData = new FormData(this);
-            fetch('/generate_response/', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('question').value = ''; // Clear input value
-                stopAnimation(); // Stop the animation
-                document.getElementById('conversationHistory').innerHTML += data.response + '<br><br><hr><hr>'; // Display response
-                questionTextarea.disabled = false; 
-                setTimeout(scrollToBottom, 100);
-                console.log(data); 
-            })
-            .catch(error => console.error('Error:', error));
-        });
-        setTimeout(scrollToBottom, 100);
-        
-    </script>
+    <script src="{% static 'js/chat_page.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

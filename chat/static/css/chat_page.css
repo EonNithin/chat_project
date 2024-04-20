@@ -38,6 +38,7 @@ body {
 .card-header {
     display: flex;
     align-items: center;
+    width: 100%; /* Ensure the card header takes up the entire width */
     background-color: #ffffff;
     padding: 20px;
     border-top-left-radius: 10px; /* Rounded corners for the top */
@@ -55,6 +56,7 @@ body {
 .card-header-msg {
     display: flex;
     flex-direction: column;
+    flex-grow: 1; /* Allow the message to grow and take up remaining space */
 }
 
 /* Style for the card header text */
@@ -68,10 +70,16 @@ body {
     margin: 5px 0; /* Add margin top and bottom */
 }
 
+/* Style for the button container */
+.btn-whisper-response {
+    margin-left: auto; /* Push the button to the right */
+    padding: 10px;
+}
+
+
 /* Style for the card body */
 .card-body {
     padding: 10px;
-    
     overflow-y: scroll;
     max-height: 540px;
     background-color: #FBFCFC; /* Background color */
