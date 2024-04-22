@@ -154,6 +154,10 @@ body {
     box-sizing: border-box; /* Include padding and border in the width */
 }
 
+.btn-primary {
+    font-size: 22px; /* Adjust font size */
+}
+
 /* Style for the submit button */
 #submitButton {
     width: 80px; /* Adjust button width */

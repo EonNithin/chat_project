@@ -70,12 +70,16 @@ body {
     margin: 5px 0; /* Add margin top and bottom */
 }
 
+.btn-primary {
+    font-size: 22px; /* Adjust font size */
+}
+
 /* Style for the button container */
 .btn-whisper-response {
     margin-left: auto; /* Push the button to the right */
     padding: 10px;
+    
 }
-
 
 /* Style for the card body */
 .card-body {

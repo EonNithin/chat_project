@@ -27,6 +27,8 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
     }
 });
 
+var conversationHistory = document.getElementById('conversationHistory');
+
 document.getElementById('transcribeBtn').addEventListener('click', function(event) {
     event.preventDefault(); // Prevent the default form submission
     var file = document.getElementById('fileInput').files[0];
@@ -38,6 +40,7 @@ document.getElementById('transcribeBtn').addEventListener('click', function(even
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         formData.append('csrfmiddlewaretoken', csrfToken);
         
+        conversationHistory.innerHTML='';
         scrollToBottom();
         startAnimation(); // Start the animation
         
@@ -47,13 +50,9 @@ document.getElementById('transcribeBtn').addEventListener('click', function(even
         })
         .then(response => response.json())
         .then(data => {
-            scrollToBottom();
-            // Handle the response data
-            var conversationHistory = document.getElementById('conversationHistory');
             stopAnimation();
             //conversationHistory.innerHTML += '<div><strong>Transcribed Text:</strong><br> <span style="color: navy;">' + data.transcribed_text + '</span></div>';
-            conversationHistory.innerHTML += '<div><strong>Response Text:</strong>' + data.response_text + '</div>';
-            
+            conversationHistory.innerHTML += '<div><strong>Response Text:</strong>' + data.response_text + '</div>'; 
             // Scroll to the bottom of the conversation history
             scrollToBottom();
             console.log(data);
