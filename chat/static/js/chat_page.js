@@ -40,7 +40,6 @@ document.getElementById('promptForm').addEventListener('submit', function(event)
         document.getElementById('question').value = ''; // Clear input value
         stopAnimation(); // Stop the animation
         document.getElementById('conversationHistory').innerHTML += data.response + '<br><br><hr><hr>'; // Display response
-        questionTextarea.disabled = false; 
         setTimeout(scrollToBottom, 100);
         console.log(data); 
     })

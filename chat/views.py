@@ -28,19 +28,45 @@ def generate_response(request):
         return JsonResponse({'question': question, 'response': response})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+def transcribe_uploaded_file(uploaded_file):
+    # Define the directory where you want to save the uploaded file temporarily
+    temp_dir = os.path.join(settings.MEDIA_ROOT, 'mp3s')
+
+    # Create the temporary directory if it doesn't exist
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
+
+    # Save the uploaded file to the temporary directory
+    file_path = os.path.join(temp_dir, uploaded_file.name)
+    with open(file_path, 'wb') as destination:
+        for chunk in uploaded_file.chunks():
+            destination.write(chunk)
+
+    # Transcribe the saved file using Whisper
+    model = whisper.load_model("base")
+    result = model.transcribe(file_path)
+    print("response from whisper:", result["text"])
+
+    # Return the transcribed text
+    return result["text"]
+
 def transcribe_mp3(request):
-    if request.method == 'POST' and request.FILES.get('file'):
-        # Save the uploaded file to the mp3s directory within MEDIA_ROOT
+    if request.method == 'POST' and request.FILES['file']:
         uploaded_file = request.FILES['file']
-        print("uploaded file:\n", uploaded_file, "\n")
+        transcribed_text = transcribe_uploaded_file(uploaded_file)
+        print("\nTranscribed Text:\n", transcribed_text,"\n")
+        response_text = llm.invoke(transcribed_text)
+        print("\nResponse Text:\n", response_text)
+         # Create a JSON response with both transcribed text and response text
+        response_data = {
+            'transcribed_text': transcribed_text,
+            'response_text': response_text
+        }
         
-
-    
-        # Implement the rest of your logic (transcription, etc.) here
-
-        return JsonResponse({'success': True})
+        # Return the JSON response
+        return JsonResponse(response_data)
     else:
-        return JsonResponse({'error': 'No file uploaded'}, status=400)
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 def whisper_response(request):
