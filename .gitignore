@@ -1,6 +1,11 @@
 /shelf/
 /workspace.xml
 
+db.sqlite3 
+venv
+.env
+
 __pycache__/*
 chat/__pycache__/*
 chat_project/__pycache__/*
+chat/migrations/__pycache__/*
