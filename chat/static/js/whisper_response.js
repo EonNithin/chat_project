@@ -5,13 +5,14 @@ function scrollToBottom() {
     console.log("scrolling to bottom");
 }
 
-var dotsAnimation = document.getElementById('wave');
+var spinner = document.getElementById('spinner');
+
 function startAnimation() {
-    dotsAnimation.style.display = 'inline'; // Make the animation visible
+    spinner.style.display = 'block';
 }
 
 function stopAnimation() {
-    dotsAnimation.style.display = 'none';
+    spinner.style.display = 'none';
 }
 
 document.getElementById('fileInput').addEventListener('change', function(event) {
@@ -25,6 +26,7 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
         document.getElementById('transcribeBtn').disabled = true;
     }
 });
+
 document.getElementById('transcribeBtn').addEventListener('click', function(event) {
     event.preventDefault(); // Prevent the default form submission
     var file = document.getElementById('fileInput').files[0];
@@ -35,14 +37,25 @@ document.getElementById('transcribeBtn').addEventListener('click', function(even
         // Add the CSRF token to the FormData
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         formData.append('csrfmiddlewaretoken', csrfToken);
-
+        
+        scrollToBottom();
+        startAnimation(); // Start the animation
+        
         fetch('/transcribe_mp3/', {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
+            scrollToBottom();
             // Handle the response data
+            var conversationHistory = document.getElementById('conversationHistory');
+            stopAnimation();
+            //conversationHistory.innerHTML += '<div><strong>Transcribed Text:</strong><br> <span style="color: navy;">' + data.transcribed_text + '</span></div>';
+            conversationHistory.innerHTML += '<div><strong>Response Text:</strong>' + data.response_text + '</div>';
+            
+            // Scroll to the bottom of the conversation history
+            scrollToBottom();
             console.log(data);
         })
         .catch(error => console.error('Error:', error));

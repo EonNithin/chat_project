@@ -93,45 +93,47 @@ body {
     white-space: pre-wrap;
 }
 
-div#wave {
-    position:relative;
-    margin:20px;
-    padding: 10px;
-    text-align:center;
-    width:100px;
-    height:100px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 110px;
+.spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the content horizontally */
 }
 
-.dot {
-    display:inline-block;
-    width:12px;
-    height:12px;
-    border-radius:50%;
-    margin-right:3px;
-    background:#303131;
-    animation: wave 1.3s linear infinite;
+.spinner-content {
+    display: flex; /* Ensure both elements are in the same line */
+    align-items: center; /* Align items vertically */
 }
 
-.dot:nth-child(2) {
-    animation-delay: -1.1s;
+.processing-text {
+    margin-right: 10px; /* Adjust margin to create space between text and animation */
 }
 
-.dot:nth-child(3) {
-    animation-delay: -0.9s;
+.bounce-container {
+    display: flex;
 }
 
-@keyframes wave {
-    0%, 60%, 100% {
-    transform: initial;
+.bounce1, .bounce2, .bounce3 {
+    width: 18px;
+    height: 18px;
+    background-color: #333;
+    border-radius: 100%;
+    margin-right: 5px; /* Adjust spacing between bounce divs */
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
 
-30% {
-    transform: translateY(-15px);
+.bounce1 {
+    animation-delay: -0.32s;
 }
+
+.bounce2 {
+    animation-delay: -0.16s;
 }
+
+@keyframes sk-bouncedelay {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1.0); }
+}
+
 
 /* Style for the form */
 #promptForm {
