@@ -57,10 +57,17 @@ def transcribe_mp3(request):
         print("\nTranscribed Text:\n", transcribed_text,"\n")
         response_text = llm.invoke(transcribed_text)
         print("\nResponse Text:\n", response_text)
-         # Create a JSON response with both transcribed text and response text
+        
+        # Add prompt to generate quiz questions based on response_text
+        quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for : {response_text}"
+        quiz_question = llm.invoke(quiz_prompt)
+        print("\nQuiz Questions:\n", quiz_question)
+        
+        # Create a JSON response with both transcribed text and response text
+        #'transcribed_text': transcribed_text,
         response_data = {
-            'transcribed_text': transcribed_text,
-            'response_text': response_text
+            'response_text': response_text,
+            'quiz_question': quiz_question
         }
         
         # Return the JSON response

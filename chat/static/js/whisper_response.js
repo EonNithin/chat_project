@@ -52,7 +52,8 @@ document.getElementById('transcribeBtn').addEventListener('click', function(even
         .then(data => {
             stopAnimation();
             //conversationHistory.innerHTML += '<div><strong>Transcribed Text:</strong><br> <span style="color: navy;">' + data.transcribed_text + '</span></div>';
-            conversationHistory.innerHTML += '<div><strong>Response Text:</strong>' + data.response_text + '</div>'; 
+            conversationHistory.innerHTML += '<div><strong>Summary:</strong><br>' + data.response_text + '<br></div><br>'; 
+            conversationHistory.innerHTML += '<div><strong>Quiz Questions:</strong><br>' + data.quiz_question + '<br></div><br>'; 
             // Scroll to the bottom of the conversation history
             scrollToBottom();
             console.log(data);
