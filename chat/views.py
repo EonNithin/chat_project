@@ -64,7 +64,6 @@ def transcribe_mp3(request):
         print("\nQuiz Questions:\n", quiz_question)
         
         # Create a JSON response with both transcribed text and response text
-        #'transcribed_text': transcribed_text,
         response_data = {
             'response_text': response_text,
             'quiz_question': quiz_question
