@@ -10,6 +10,24 @@ from chat_project import settings
 llm = Ollama(model="mistral")
 conversation_history = []
 
+mp3_folderpath = "/home/eon/obs studio/recordings/mp3s"
+
+def get_latest_filepath(directory):
+    # Get a list of all files in the directory
+    files = [os.path.join(directory, file) for file in os.listdir(directory)]
+    
+    # Filter out directories (if any)
+    files = [file for file in files if os.path.isfile(file)]
+    
+    # Sort files based on modification time (descending order)
+    files.sort(key=os.path.getmtime, reverse=True)
+    
+    # Return the path of the most recent file
+    if files:
+        return files[0]
+    else:
+        return None
+
 def ollama_generate_response(question):
     global conversation_history
     conversation_history.append(question)
@@ -28,52 +46,39 @@ def generate_response(request):
         return JsonResponse({'question': question, 'response': response})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-def transcribe_uploaded_file(uploaded_file):
-    # Define the directory where you want to save the uploaded file temporarily
-    temp_dir = os.path.join(settings.MEDIA_ROOT, 'mp3s')
+def transcribe_latest_file(latest_file):
+    try:
+        # Transcribe the uploaded file using Whisper
+        model = whisper.load_model("base")
+        result = model.transcribe(latest_file)
+        print("\nresponse from whisper:\n", result["text"])
+        # Return the transcribed text
+        return result["text"]
+    except Exception as e:
+        print("Error transcribing uploaded file:", e)
+        return None
 
-    # Create the temporary directory if it doesn't exist
-    if not os.path.exists(temp_dir):
-        os.makedirs(temp_dir)
-
-    # Save the uploaded file to the temporary directory
-    file_path = os.path.join(temp_dir, uploaded_file.name)
-    with open(file_path, 'wb') as destination:
-        for chunk in uploaded_file.chunks():
-            destination.write(chunk)
-
-    # Transcribe the saved file using Whisper
-    model = whisper.load_model("base")
-    result = model.transcribe(file_path)
-    print("response from whisper:", result["text"])
-
-    # Return the transcribed text
-    return result["text"]
 
 def transcribe_mp3(request):
-    if request.method == 'POST' and request.FILES['file']:
-        uploaded_file = request.FILES['file']
-        transcribed_text = transcribe_uploaded_file(uploaded_file)
-        print("\nTranscribed Text:\n", transcribed_text,"\n")
-        response_text = llm.invoke(transcribed_text)
-        print("\nResponse Text:\n", response_text)
-        
-        # Add prompt to generate quiz questions based on response_text
-        quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for : {response_text}"
-        quiz_question = llm.invoke(quiz_prompt)
-        print("\nQuiz Questions:\n", quiz_question)
-        
-        # Create a JSON response with both transcribed text and response text
-        response_data = {
-            'response_text': response_text,
-            'quiz_question': quiz_question
-        }
-        
-        # Return the JSON response
-        return JsonResponse(response_data)
+    if request.method == 'POST':
+        global mp3_folderpath
+        latest_file = get_latest_filepath(mp3_folderpath)
+        print("\nLatest filepath:\n", latest_file)
+        transcribed_text = transcribe_latest_file(latest_file)
+        if transcribed_text:
+            response_text = llm.invoke(transcribed_text)
+            quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for : {response_text}"
+            quiz_question = llm.invoke(quiz_prompt)
+            response_data = {
+                'file_path': latest_file,
+                'response_text': response_text,
+                'quiz_question': quiz_question
+            }
+            return JsonResponse(response_data)
+        else:
+            return JsonResponse({'error': 'Error transcribing uploaded file'}, status=500)
     else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
-
+        return JsonResponse({'error': 'Invalid request or missing file'}, status=400)
 
 def whisper_response(request):
     # Implement your logic here if needed

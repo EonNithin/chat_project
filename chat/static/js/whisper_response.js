@@ -15,32 +15,21 @@ function stopAnimation() {
     spinner.style.display = 'none';
 }
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    var file = event.target.files[0];
-    console.log(file);
-    if (file) {
-        // Enable transcribe button if a file is selected
-        document.getElementById('transcribeBtn').disabled = false;
-    } else {
-        // Disable transcribe button if no file is selected
-        document.getElementById('transcribeBtn').disabled = true;
-    }
-});
-
 var conversationHistory = document.getElementById('conversationHistory');
 
-document.getElementById('transcribeBtn').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent the default form submission
-    var file = document.getElementById('fileInput').files[0];
-    if (file) {
+document.getElementById('fetchLatestBtn').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default button behavior
+
+    // Call the transcribe_mp3 function via AJAX
+    try {
         var formData = new FormData();
-        formData.append('file', file);
         
         // Add the CSRF token to the FormData
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         formData.append('csrfmiddlewaretoken', csrfToken);
         
         conversationHistory.innerHTML='';
+
         scrollToBottom();
         startAnimation(); // Start the animation
         
@@ -59,6 +48,8 @@ document.getElementById('transcribeBtn').addEventListener('click', function(even
             console.log(data);
         })
         .catch(error => console.error('Error:', error));
+    } catch (error) {
+        console.error('Error:', error);
     }
 });
 
