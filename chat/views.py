@@ -84,5 +84,8 @@ def whisper_response(request):
     # Implement your logic here if needed
     return render(request, 'whisper_response.html')  # Replace 'different_ui_url_name' with the actual URL name for the different UI
 
+def obs_recording(request):
+    return render(request, 'obs_recording.html')
+
 def chat_page(request):
     return render(request, 'chat_page.html')
