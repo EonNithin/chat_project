@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'ui/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ui/bootstrap.css.map' %}">
+    <link rel="stylesheet" href="{% static 'ui/bootstrap.min.css.map' %}">
+    
+    <title>OBS UI for Recording </title>
+    <style>
+        .home-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto; /* Add vertical scrolling */
+            max-height: 300vh; /* Set a maximum height to enable scrolling */
+        }
+
+        .button-container {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Add gap between buttons */
+            margin: 10px; /* Adjust margin */
+        }
+
+        /* Add custom styles */
+        .button-row {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 9999; /* Ensure buttons are on top of other content */
+        }
+
+        .button {
+            display: inline-block;
+            margin-left: 10px;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            outline: none;
+            font-size: 27px; /* Adjust font size */
+        }
+
+        /* Style for the logo */
+        .logo {
+            width: 100%; /* Adjust logo width */
+            max-width: 200px; /* Set max-width for logo */
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 20px; /* Add margin below logo */
+        }
+        
+        /* Place logo at the top */
+        .logo-container {
+            position:fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999; /* Ensure logo is on top of other content */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height: 100vh;">
+            <div class="home-screen">
+                <!-- Logo container -->
+                <div class="logo-container">
+                    <!-- Logo -->
+                    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+                </div>
+
+                <!-- Button container for start and stop recording -->
+                <div class="button-container">
+                    <!-- Start Recording button -->
+                    <button id="recordButton" class="button btn btn-outline-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-record-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-8 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                        </svg>
+                        Start Recording
+                    </button>
+
+                    <!-- Stop button -->
+                    <button id="stopButton" class="button btn btn-outline-danger" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-pause-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5m3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5"/>
+                        </svg>
+                        Stop Recording
+                    </button>
+                </div>
+                
+                <!-- Button container for start and stop streaming -->
+                <div class="button-container">
+                    <!-- Start streaming button -->
+                    <button id="startStreamButton" class="button btn btn-outline-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
+                            <path d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707m2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 1 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708m5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708m2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707zM10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0"/>
+                        </svg>
+                        Start Streaming
+                    </button>
+
+                    <!-- Stop streaming button -->
+                    <button id="stopStreamButton" class="button btn btn-outline-warning" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-pause-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5m3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5"/>
+                        </svg>
+                        Stop Streaming
+                    </button>
+                </div>
+
+                <div class="videoPlayer">
+                    <div>
+                        <h2> Video Player</h2>
+                        <video id="videoPlayer" controls width="570px" height="320px">
+                            <!-- Default video source -->
+                            <source src="" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div>
+                        <input type="file" id="fileInput" accept="video/*">
+                    </div>
+                </div>
+                
+                <!-- Buttons for full screen and full screen exit -->
+                <div class="button-row">
+                    <!-- Full screen button -->
+                    <button id="fullscreenButton" class="button btn btn-outline-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707m4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707m0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707m-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707"/>
+                        </svg>
+                    </button>
+
+                    <!-- Full screen exit button -->
+                    <button id="fullscreenExitButton" class="button btn btn-outline-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-fullscreen-exit" viewBox="0 0 16 16">
+                            <path d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5m5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5M0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5m10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+<!-- Bootstrap Bundle -->
+<script src="{% static 'ui/bootstrap.min.js' %}"></script>
+<script src="{% static 'ui/bootstrap.min.js.map' %}"></script>
+<!-- OBS websocket Bundle -->
+<script src="{% static 'ui/obs-ws.min.js' %}"></script>
+<script src="{% static 'ui/obs-ws.min.js.map' %}"></script>
+<script>
+    // Connect to OBS WebSocket server
+    const obs = new OBSWebSocket();
+
+    let isConnected = false;
+
+    async function connectToOBS() {
+        try {
+            await obs.connect('ws://0.0.0.0:4455', '654321'); // Connect OBS
+            isConnected = true;
+            await updateRecordingButton();
+            await updateStreamingButton();
+            console.log('Connected to OBS Studio');
+        } catch (error) {
+            console.error('Failed to connect to OBS Studio:', error);
+            alert('Failed to connect to OBS Studio, OBS Studio app needs to be opened. Load page again after OBS app is opened');
+        }
+    }
+
+    async function disconnectToOBS() {
+        try {
+            await obs.disconnect(); // disconnect OBS
+            isConnected = false;
+            console.log('Disconnected to OBS Studio');
+        } catch (error) {
+            console.error('Failed to disconnect to OBS Studio:', error);
+        }
+    }
+
+    let isRecording = false;
+
+    // Add event listener to a user-initiated event (e.g., click) to trigger full screen mode
+    document.addEventListener("DOMContentLoaded", async () => {
+        await connectToOBS(); // Automatically connect to OBS on page load
+    });
+
+    // Event listener for start recording button click
+    document.getElementById('recordButton').addEventListener('click', () => {
+        toggleRecording(); // Toggle recording state
+    });
+
+    document.getElementById('stopButton').addEventListener('click', () => {
+        toggleRecording();
+    }
+    );
+
+    // Function to toggle recording state
+    function toggleRecording() {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    }
+
+    // Function to start recording in OBS
+    async function startRecording() {
+        try {
+            await obs.call('StartRecord');
+            console.log('Started recording');
+            // Update button style
+            document.getElementById('recordButton').style.display = 'none';
+            document.getElementById('stopButton').style.display = 'block';  
+            isRecording = true;
+        } catch (error) {
+            console.error('Failed to start recording:', error);
+            alert('Failed to start recording, Please refresh page and check you are connected to OBS Studio');
+        }
+    }
+
+    // Function to stop recording in OBS
+    async function stopRecording() {
+        try {
+            await obs.call('StopRecord');
+            // Redirect to a new page
+            //window.location.href = 'http://127.0.0.1:8000/whisper_response/';
+            // Open the URL in a new tab
+	    window.open('http://127.0.0.1:8000/whisper_response/', '_blank');
+
+            console.log('Stopped recording');
+            // Update button style
+            document.getElementById('recordButton').style.display = 'block';
+            document.getElementById('stopButton').style.display = 'none';
+            isRecording = false;
+        } catch (error) {
+            console.error('Failed to stop recording:', error);
+            alert('Failed to stop recording. Please refresh page and Check your connection to OBS Studio');
+        }
+    }
+    
+    async function updateRecordingButton() {
+        try {
+            const response = await obs.call("GetRecordStatus");
+            isRecording = response.outputActive;
+            console.log(response);
+            console.log(isRecording);
+            const recordButton = document.getElementById('recordButton');
+            const stopButton = document.getElementById('stopButton');
+            if (isRecording) {
+                recordButton.style.display = 'none';
+                stopButton.style.display = 'block';
+            } else {
+                recordButton.style.display = 'block';
+                stopButton.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Failed to get recording status:', error);
+        }
+    }
+    
+    let isStreaming = false;
+
+    // Event listener for start stream button click
+    document.getElementById('startStreamButton').addEventListener('click', async () => {
+        toggleStreaming(); // Toggle streaming state
+    });
+    
+    // Event listener for start stream button click
+    document.getElementById('stopStreamButton').addEventListener('click', async () => {
+        toggleStreaming(); // Toggle streaming state
+    });
+
+    // Function to toggle streaming state
+    function toggleStreaming() {
+        if (isStreaming) {
+            stopStreaming();
+        } else {    
+            startStreaming();
+        }
+    }
+
+    // Function to start streaming in OBS
+    async function startStreaming() {
+        try {
+            await obs.call('StartStream');
+            console.log('Started streaming');
+            // Update button style
+            document.getElementById('startStreamButton').style.display = 'none';
+            document.getElementById('stopStreamButton').style.display = 'block';
+            isStreaming = true;
+        } catch (error) {
+            console.error('Failed to start streaming:', error);
+            alert('Failed to start streaming, Please refresh page and check you are connected to OBS Studio');
+        }
+    }
+
+    // Function to stop streaming in OBS
+    async function stopStreaming() {
+        try {
+            await obs.call('StopStream');
+            console.log('Stopped streaming');
+            // Update button style
+            document.getElementById('startStreamButton').style.display = 'block';
+            document.getElementById('stopStreamButton').style.display = 'none';
+            isStreaming = false;
+        } catch (error) {
+            console.error('Failed to stop streaming:', error);
+            alert('Failed to stop streaming, Please refresh page and check your connection to OBS Studio');
+        }
+    }
+
+    async function updateStreamingButton() {
+        try {
+            const streamresponse = await obs.call("GetStreamStatus");
+            isStreaming = streamresponse.outputActive;
+            console.log(streamresponse);
+            console.log(isStreaming);
+            const startButton = document.getElementById('startStreamButton');
+            const stopButton = document.getElementById('stopStreamButton');
+
+            if (isStreaming) {
+                startButton.style.display = 'none';
+                stopButton.style.display = 'block';
+            } else {
+                startButton.style.display = 'block';
+                stopButton.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Failed to get streaming status:', error);
+        }
+    }
+
+    // Get the file input element
+    var fileInput = document.getElementById('fileInput');
+    // Get the video player element
+    var videoPlayer = document.getElementById('videoPlayer');
+
+    // Listen for changes in the file input element
+    fileInput.addEventListener('change', function() {
+        // Get the selected file
+        var file = fileInput.files[0];
+        // Create a URL for the selected file
+        var videoURL = URL.createObjectURL(file);
+        // Set the source of the video player to the selected file
+        videoPlayer.src = videoURL;
+    });
+
+    // Function to request full screen mode
+    function requestFullScreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { /* Firefox */
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+            elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        } else if (elem.msRequestFullscreen) { /* IE/Edge */
+            elem.msRequestFullscreen();
+        }
+    }
+
+    // Function to request exit full screen mode
+    function exitFullScreen() {
+        const elem = document;
+        if (elem.exitFullscreen) {
+            elem.exitFullscreen();
+        } else if (elem.mozCancelFullScreen) { /* Firefox */
+            elem.mozCancelFullScreen();
+        } else if (elem.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+            elem.webkitExitFullscreen();
+        } else if (elem.msExitFullscreen) { /* IE/Edge */
+            elem.msExitFullscreen();
+        }
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+    // Assuming a button with ID "fullscreenButton" triggers full screen mode
+    const fullscreenButton = document.getElementById("fullscreenButton");
+    if (fullscreenButton) {
+        fullscreenButton.addEventListener("click", function() {
+            requestFullScreen();
+        });
+    }
+
+    // Assuming a button with ID "fullscreenExitButton" triggers exit full screen mode
+    const fullscreenExitButton = document.getElementById("fullscreenExitButton");
+    if (fullscreenExitButton) {
+        fullscreenExitButton.addEventListener("click", function() {
+            exitFullScreen();
+        });
+    }
+    });
+
+</script>
+</body>
+</html>
