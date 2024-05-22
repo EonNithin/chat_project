@@ -26,21 +26,21 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px; /* Add some spacing below the header */
+
 }
 
 /* Logo styles */
 #logo img {
     width: auto;
-    height: 70px; /* Adjust height as needed */
+    height: 60px; /* Adjust height as needed */
     margin-left: 20px;
 }
 
 /* Icon styles */
 #gear-icon img {
     width: auto;
-    height: 100px; /* Adjust height as needed */
-    margin-right: 20px;
+    height: 80px; /* Adjust height as needed */
+    margin-right: 5px;
 }
 
 /* Media query for smaller screens */
@@ -63,8 +63,9 @@ body {
 .custom-dropdown {
     position: relative;
     display: inline-block;
-    width: 100%;
-    margin-left: 20px;
+    width: 98%;
+    margin-left: 3px;
+    z-index: 1; /* Ensure dropdown is above buttons */
 }
 
 .custom-dropdown-label {
@@ -88,7 +89,7 @@ body {
     width: 100%;
     max-width: 560px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    z-index: 2;
     border-radius: 20px;
     overflow: hidden;
 }
@@ -110,6 +111,11 @@ body {
     display: block;
 }
 
+/* Add this style to ensure dropdown content covers buttons */
+.dropdown-content.show {
+    top: calc(100% + 10px); /* Position dropdown content below dropdown label */
+}
+
 /* Media query for smaller screens */
 @media (max-width: 767px) {
     .custom-dropdown-label, .dropdown-content {
@@ -118,22 +124,15 @@ body {
 }
 
 .buttons-div {
+    position: relative; /* Ensure z-index works properly */
     display: flex;
     justify-content: space-between;
     width: 100%;
     max-width: 600px; /* Adjust as necessary */
     margin: 0 auto; /* Center align the buttons-div */
     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-}
-
-.button-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 10px; /* Optional: add rounded corners */
-    padding: 10px; /* Add padding to ensure shadow doesn't clip content */
-    border: none; /* Remove border */
-    flex: 1 1 30%; /* Allow buttons to shrink, grow, and wrap */
+    z-index: 0; /* Ensure buttons are below dropdown content */
+    flex: 1 1 30%;
 }
 
 .btn-custom {
@@ -145,8 +144,8 @@ body {
 
 .circle-container {
     position: relative;
-    width: 130px;
-    height: 130px;
+    width: 120px;
+    height: 120px;
 }
 
 .outer-circle {
@@ -188,8 +187,8 @@ body {
 }
 
 .inner-circle {
-    width: 60%;
-    height: 60%;
+    width: 70%;
+    height: 70%;
     border-radius: 50%;
     background-color: #e7ebefc5; 
     display: flex;
@@ -200,8 +199,8 @@ body {
 }
 
 .center-circle-record {
-    width: 50%;
-    height: 50%;
+    width: 55%;
+    height: 55%;
     border-radius: 50%;
     background-image: url('../images/Recording Icon.png'); /* Path to the image */
     background-size: cover; /* Ensure the image covers the entire element */
@@ -211,8 +210,8 @@ body {
 }
 
 .center-circle-stream {
-    width: 50%;
-    height: 50%;
+    width: 55%;
+    height: 55%;
     border-radius: 50%;
     background-image: url('../images/Streaming Icon.png'); /* Path to the image */
     background-size: cover; /* Ensure the image covers the entire element */
@@ -222,8 +221,8 @@ body {
 }
 
 .center-circle-aiprocess {
-    width: 50%;
-    height: 50%;
+    width: 60%;
+    height: 60%;
     border-radius: 50%;
     background-image: url('../images/AI Process Icon.png'); /* Path to the image */
     background-size: cover; /* Ensure the image covers the entire element */
@@ -234,7 +233,7 @@ body {
 
 .button-text {
     font-size: 16px;
-    color: #000000; /* Adjust color as needed */
+    color: #888888; /* Adjust color as needed */
     text-align: center;
 }
 
@@ -244,3 +243,65 @@ body {
         flex: 1 1 100%; /* Ensure buttons take full width on small screens */
     }
 }
+
+.buttons-row2 {
+    margin-left: 3px;
+}
+.buttons-row2 .btn-custom{
+    width: 80px;
+    height: auto;
+}
+
+.img-text{
+    font-size: 16px;
+    color: #888888; 
+}
+
+.videoPlayer {
+    max-width: 100%; /* Make the video player responsive */
+    margin: 10 auto; /* Center the video player */
+}
+
+#videoPlayer {
+    width: 100%; /* Make the video player fill its container */
+    height: auto; /* Automatically adjust height based on width */
+    margin-left: 10px;
+}
+
+.new-circle-container {
+    position: relative;
+    width: 70px; /* Adjust size as needed */
+    height: 70px; /* Adjust size as needed */
+}
+
+.new-outer-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #F5F5F9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.new-inner-circle {
+    width: 70%;
+    height: 70%;
+    border-radius: 50%;
+    background-color: #e7ebefc5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.new-inner-circle img {
+    width: 60%; /* Adjust size as needed */
+    height: 60%; /* Adjust size as needed */
+}
+
+

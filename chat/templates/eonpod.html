@@ -21,7 +21,7 @@
         <div class="row justify-content-center align-items-center min-vh-100">
             <div class="col-12 col-md-8 col-lg-6">
                 <div class="home-screen text-center p-3">
-                    <div class="header d-flex justify-content-between align-items-center mb-4">
+                    <div class="header d-flex justify-content-between align-items-center mb-2">
                         <div class="logo" id="logo">
                             <img src="{% static 'images/Logo.png' %}" alt="Logo" class="img-fluid">
                         </div>
@@ -47,7 +47,7 @@
                     </div>
                     
                     <!-- Buttons -->
-                    <div class="row row-cols-1 row-cols-sm-3 g-3 mt-4 buttons-div">
+                    <div class="row row-cols-1 row-cols-sm-3 g-3 mt-2 buttons-div">
                         <!-- Start Recording -->
                         <div class="col">
                             <div class="d-flex justify-content-center">
@@ -105,7 +105,72 @@
                             <div class="button-text text-center mt-2">AI Processing</div>
                         </div>
                     </div>    
-                                      
+                                  
+                    <!--buttons-row2-->
+                    <div class="row mt-2 buttons-row2">
+                        <div class="col-4">
+                            <button class="btn btn-sm btn-custom">
+                                <img src="{%static 'images/Class Camera Icon.png'%}" alt="Image 1" class="img-fluid">
+                                <div class="img-text">Class Camera</div>
+                            </button>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-sm btn-custom">
+                                <img src="{%static 'images/AI Observation Icon.png'%}" alt="Image 2" class="img-fluid">
+                                <div class="img-text">AI Observation</div>
+                            </button>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-sm btn-custom">
+                                <img src="{%static 'images/Smart Screen Grab Icon.png'%}" alt="Image 3" class="img-fluid">
+                                <div class="img-text">Smart Screen Grab</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!--Video Player Container-->
+                    <div class="container">
+                        <div class="row justify-content-center mt-4">
+                            <div class="col-12">
+                                <div class="videoPlayer">
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <video id="videoPlayer" class="embed-responsive-item" controls>
+                                            <!-- Default video source -->
+                                            <source src="" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!--Buttons for Video Player-->
+                    <div class="row justify-content-center mt-2">
+                        <!-- Play Latest Recording -->
+                        <div class="col-6 col-md-4 d-flex flex-column align-items-center">
+                            <div class="new-circle-container">
+                                <div class="new-outer-circle">
+                                    <div class="new-inner-circle">
+                                        <img src="{% static 'images/Play Latest Recording Icon.png' %}" alt="Image" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="button-text text-center mt-2">Play Latest Recording</div>
+                        </div>
+                        <!-- Choose a File to Play -->
+                        <div class="col-6 col-md-4 d-flex flex-column align-items-center">
+                            <div class="new-circle-container">
+                                <div class="new-outer-circle">
+                                    <div class="new-inner-circle">
+                                        <img src="{% static 'images/Choose File Icon.png' %}" alt="Image" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="button-text text-center mt-2">Choose a File to Play</div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
