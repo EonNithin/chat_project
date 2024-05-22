@@ -1,0 +1,246 @@
+body {
+    background: rgb(60, 59, 59); /* Black background for container */
+    margin: 0;
+    gap: 0px;
+}
+
+.container {
+    padding: 0;
+}
+
+.row {
+    width: 100%;
+}
+
+/* Ensure the container is responsive */
+.container .home-screen{
+    background: #E7EBEF; /* Light gray background for home screen */
+    min-height: 100vh; /* Use min-height instead of height */
+    gap: 0px;
+    border-radius: 60px; /* Simplified border-radius */
+    opacity: 1; /* Fixed opacity value */
+}
+
+/* Header styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Add some spacing below the header */
+}
+
+/* Logo styles */
+#logo img {
+    width: auto;
+    height: 70px; /* Adjust height as needed */
+    margin-left: 20px;
+}
+
+/* Icon styles */
+#gear-icon img {
+    width: auto;
+    height: 100px; /* Adjust height as needed */
+    margin-right: 20px;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 767px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+    }
+    #logo {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+    #gear-icon {
+        margin-right: 0;
+        margin-top: 10px;
+    }
+}
+
+/* Custom Dropdown styles */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-left: 20px;
+}
+
+.custom-dropdown-label {
+    background-color: #E1E4E7;
+    width: 100%;
+    max-width: 560px;
+    height: 45px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #E1E4E7;
+    width: 100%;
+    max-width: 560px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    color: black;
+    width: 100%;
+    height: auto;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: lightgray;
+}
+
+.show {
+    display: block;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 767px) {
+    .custom-dropdown-label, .dropdown-content {
+        width: 100%;
+    }
+}
+
+.buttons-div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px; /* Adjust as necessary */
+    margin: 0 auto; /* Center align the buttons-div */
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+}
+
+.button-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px; /* Optional: add rounded corners */
+    padding: 10px; /* Add padding to ensure shadow doesn't clip content */
+    border: none; /* Remove border */
+    flex: 1 1 30%; /* Allow buttons to shrink, grow, and wrap */
+}
+
+.btn-custom {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0; /* Remove margin */
+}
+
+.circle-container {
+    position: relative;
+    width: 130px;
+    height: 130px;
+}
+
+.outer-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Black box shadow */
+}
+
+.progress-bar {
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 10px solid #4caf50; /* Progress bar color */
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+.middle-circle {
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    background-color: #ffffffa6; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Black box shadow */
+}
+
+.inner-circle {
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background-color: #e7ebefc5; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Black box shadow */
+    z-index: 2;
+}
+
+.center-circle-record {
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background-image: url('../images/Recording Icon.png'); /* Path to the image */
+    background-size: cover; /* Ensure the image covers the entire element */
+    background-position: center; /* Center the image within the element */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    z-index: 3;
+}
+
+.center-circle-stream {
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background-image: url('../images/Streaming Icon.png'); /* Path to the image */
+    background-size: cover; /* Ensure the image covers the entire element */
+    background-position: center; /* Center the image within the element */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    z-index: 3;
+}
+
+.center-circle-aiprocess {
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background-image: url('../images/AI Process Icon.png'); /* Path to the image */
+    background-size: cover; /* Ensure the image covers the entire element */
+    background-position: center; /* Center the image within the element */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    z-index: 3;
+}
+
+.button-text {
+    font-size: 16px;
+    color: #000000; /* Adjust color as needed */
+    text-align: center;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 767px) {
+    .button-wrapper {
+        flex: 1 1 100%; /* Ensure buttons take full width on small screens */
+    }
+}

@@ -87,5 +87,5 @@ def whisper_response(request):
 def obs_recording(request):
     return render(request, 'obs_recording.html')
 
-def chat_page(request):
-    return render(request, 'chat_page.html')
+def eonpod(request):
+    return render(request, 'eonpod.html')
