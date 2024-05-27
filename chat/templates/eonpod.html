@@ -174,24 +174,28 @@
                     <div class="row justify-content-center mt-2">
                         <!-- Play Latest Recording -->
                         <div class="col-6 col-md-4 d-flex flex-column align-items-center">
-                            <div class="new-circle-container">
-                                <div class="new-outer-circle">
-                                    <div class="new-inner-circle">
-                                        <img src="{% static 'images/Play Latest Recording Icon.png' %}" loading="lazy" alt="Image" class="img-fluid">
+                            <button class="btn-custom playLatestFile" id="playLatestFile" onclick="playLatestRecording()">
+                                <div class="new-circle-container">
+                                    <div class="new-outer-circle">
+                                        <div class="new-inner-circle">
+                                            <img src="{% static 'images/Play Latest Recording Icon.png' %}" loading="lazy" alt="Image" class="img-fluid">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                             <div class="button-text text-center mt-2">Play Latest Recording</div>
                         </div>
                         <!-- Choose a File to Play -->
                         <div class="col-6 col-md-4 d-flex flex-column align-items-center">
-                            <div class="new-circle-container">
-                                <div class="new-outer-circle">
-                                    <div class="new-inner-circle">
-                                        <img src="{% static 'images/Choose File Icon.png' %}" loading="lazy" alt="Image" class="img-fluid">
+                            <button class="btn-custom chooseFile-btn" id="chooseFile-btn" onclick="chooseFileToPlay()">
+                                <div class="new-circle-container">
+                                    <div class="new-outer-circle">
+                                        <div class="new-inner-circle">
+                                            <img src="{% static 'images/Choose File Icon.png' %}" loading="lazy" alt="Image" class="img-fluid">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                             <div class="button-text text-center mt-2">Choose a File to Play</div>
                         </div>
                     </div>

@@ -109,13 +109,13 @@ async function toggleStreaming(){
     const progressBar = document.getElementById("progress-bar2");
 
     if (isStreaming) {
-        // Stop recording
+        // Stop Streaming
         try {
             await obs.call('StopStream');
             console.log('Stopped Streaming');
             startStreamButton.style.display = "block";
             stopStreamButton.style.display = "none";
-            textLabelRecord.textContent = "Start Recording";
+            textLabelRecord.textContent = "Start Streaming";
             progressBar.style.visibility = "hidden"; // Hide progress bar
             progressBar.style.width = "0%"; // Reset progress bar
             isStreaming = false;
@@ -124,13 +124,13 @@ async function toggleStreaming(){
             alert('Failed to stop streaming. Please refresh page and check your connection to OBS Studio');
         }
     } else {
-        // Start recording
+        // Start Streaming
         try {
             await obs.call('StartStream');
             console.log('Started Streaming');
             startStreamButton.style.display = "none";
             stopStreamButton.style.display = "block";
-            textLabelRecord.textContent = "Stop Recording";
+            textLabelRecord.textContent = "Stop Streaming";
             progressBar.style.visibility = "visible"; // Show progress bar
             isStreaming = true;
         } catch (error) {
@@ -195,4 +195,57 @@ window.onclick = function(event) {
             }
         }
     }
+}
+
+// Pass the latest file path to JavaScript
+function playLatestRecording() {
+    fetch('/get_latest_mp4_filepath/', {
+      method: 'GET' // Use GET to retrieve data
+    })
+    .then(response => response.json())
+    .then(data => {
+      const latestFilePath = data.latest_file;
+      if (latestFilePath) {
+        console.log(latestFilePath);
+        const videoElement = document.getElementById("videoPlayer");
+        console.log(videoElement);
+        videoElement.src = latestFilePath; // Set the src attribute to the media URL
+        console.log("video source: " + videoElement.src);
+        videoElement.play();
+        console.log("video source play: " + videoElement.play());
+      } else {
+        console.error("No recording found");
+      }
+    })
+    .catch(error => {
+      console.error("Error fetching latest recording:", error);
+    });
+}
+
+
+// Function to handle file selection
+function chooseFileToPlay() {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'video/mp4'; // Accept only MP4 files
+
+    // Event listener for when a file is selected
+    fileInput.addEventListener('change', function(event) {
+        const selectedFile = event.target.files[0];
+        const videoPlayer = document.getElementById('videoPlayer');
+        
+        // Check if a file is selected
+        if (selectedFile) {
+            const fileURL = URL.createObjectURL(selectedFile);
+            // Update the src attribute of the video element with the selected file's URL
+            videoPlayer.src = fileURL;
+
+            // Load and play the video
+            videoPlayer.load();
+            videoPlayer.play();
+        }
+    });
+
+    // Trigger the file input click event
+    fileInput.click();
 }

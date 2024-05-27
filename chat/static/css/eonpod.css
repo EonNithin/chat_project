@@ -246,7 +246,7 @@ body {
     width: 55%;
     height: 55%;
     border-radius: 50%;
-    background-image: url('../images/Streaming Icon.png'); /* Path to the image */
+    background-image: url('../images/Stop\ Stream\ Icon.png'); /* Path to the image */
     background-size: cover; /* Ensure the image covers the entire element */
     background-position: center; /* Center the image within the element */
     background-repeat: no-repeat; /* Prevent the image from repeating */
