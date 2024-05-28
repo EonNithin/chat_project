@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{% static 'ui/bootstrap.css.map'%}">
     <link rel="stylesheet" href="{% static 'ui/bootstrap.min.css.map'%}">
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/ai_process.css'%}">
+    <link rel="stylesheet" href="{% static 'css/ai_response.css'%}">
 </head>
 <body>
     <div class="container">
@@ -70,12 +70,12 @@
                                     <div class="tab-pane fade show active" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
                                         <!-- Content for Quiz tab -->
                                         <!-- Add your quiz content here -->
-                                        <p>these are your quiz questions</p>
+                                        <div id="quiz-questions">{{ quiz_question|safe }}</div>
                                     </div>
                                     <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
                                         <!-- Content for Summary tab -->
                                         <!-- Add your summary content here -->
-                                        <p>this is your summary page</p>
+                                        <div id="class-summary">{{ response_text|safe }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
     <!-- OBS websocket Bundle -->
     <script src="{% static 'ui/obs-ws.min.js' %}"></script>
     <!-- JS script code -->
-    <script src="{% static 'js/ai_process.js' %}"></script>
+    <script src="{% static 'js/ai_response.js' %}"></script>
         
 </body>
 </html>

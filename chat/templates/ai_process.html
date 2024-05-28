@@ -32,7 +32,7 @@
                     </div>
                     
                     <!-- Card view AI Process -->
-                    <div class="card scrollable-card mb-2">
+                    <div class="card scrollable-card mb-0">
                         <div class="ai-process-icon mt-2" id="ai-process-icon">
                             <img src="{% static 'images/AI Process Page Logo.png' %}" width="70%" loading="lazy" alt="AI Process Icon" class="img-fluid">
                         </div>
@@ -45,23 +45,62 @@
                                             <img src="{% static 'images/AI Process Latest File.png' %}" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">
                                             <div class="img-text" style="width: 130px;">AI Process Latest Recorded File</div>
                                         </button>
+                                        <button class="btn btn-sm" id="mp3-file-icon" style="display: none;" style="outline: none; border: none;">
+                                            <img src="{% static 'images/MP3 File Icon.png' %}" loading="lazy" alt="MP3 Latest File Icon" class="img-fluid">
+                                            <div class="img-text" style="width: 130px;">AI Process Latest Recorded File</div>
+                                        </button>
                                     </div>
                                 </div>
                                 
-                            </div>                     
+                            </div> 
+                            
+                            <!-- AI Quiz Generator & Class Recap -->                                                            
+                            <div class="container-fluid mt-1" id="tabs-container" style="display: none;">
+                                <ul class="nav nav-tabs justify-content-center" style="display: flex; flex-direction: row; flex-wrap: nowrap;" id="myTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="quiz-tab" data-bs-toggle="tab" data-bs-target="#quiz" type="button" role="tab" aria-controls="quiz" aria-selected="true" style="font-size: medium; outline: none; border: none; color: white; background-color: black;">AI Generated Quiz</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab" aria-controls="summary" aria-selected="false" style="font-size: medium; outline: none; border: none; color: black; background-color: white;"> AI Generate Class Recap</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="share-tab" data-bs-toggle="tab" data-bs-target="#share" type="button" role="tab" aria-controls="share" aria-selected="false" style="font-size: medium; outline: none; border: none;">
+                                            <img src="{% static 'images/Share Icon.png' %}" alt="Share Icon" style="width: 20px; height:20px; ">             
+                                        </button>
+                                    </li>
+                                </ul>                                                                                     
+                            </div>
+                            <!-- Tab Content -->
+                            <div class="tab-content mt-2" id="myTabContent">
+                                <div class="tab-pane fade show active" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
+                                    <!-- Content for Quiz tab -->
+                                    <!-- Add your quiz content here -->
+                                    <div class="scrollable-content" id="quiz-questions" style="overflow-y: auto; max-height: 220px;">
+                                        Quiz Questions
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                                    <!-- Content for Summary tab -->
+                                    <!-- Add your summary content here -->
+                                    <div class="scrollable-content" id="class-summary" style="overflow-y: auto; max-height: 220px;">
+                                        Class Summary
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                                     
                     <!-- Buttons below Card View -->
-                    <div class="row d-flex justify-content-center align-items-center mt-2">
+                    <div class="row d-flex justify-content-center align-items-center mt-2" id="btns-below-card">
                         <div class="col-4 d-flex justify-content-center align-items-center">
-                            <button class="btn btn-sm btn-custom" onclick="chooseFileToAIProcess()">
+                            <button class="btn btn-sm btn-custom" id="btn1-below-card" onclick="chooseFileToAIProcess()">
                                 <img src="{% static 'images/Choose File AI Process Icon.png' %}" loading="lazy" alt="Choose File AI Process Icon" class="img-fluid">
                                 <div class="img-text">Choose a file to AI Process</div>
                             </button>
                         </div>
                         <div class="col-4 d-flex justify-content-center align-items-center">
-                            <button class="btn btn-sm btn-custom" onclick="aiChatPage()">
+                            <button class="btn btn-sm btn-custom" id="btn2-below-card" onclick="aiChatPage()">
                                 <img src="{% static 'images/AI Observation Icon.png' %}" loading="lazy" alt="AI Observation Icon" class="img-fluid">
                                 <div class="img-text">Go to AI Class Assistant</div>
                             </button>
