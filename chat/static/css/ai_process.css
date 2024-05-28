@@ -62,12 +62,28 @@ body {
 .scrollable-card {
     background-color: #E7EBEF;
     border: none;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+}
+
+.btn-custom {
+    background: none;
+    border: none;
+    outline: none;
+    padding: 0;
+    border-radius: 50%;
 }
 
 .btn-custom img{
     width: 80px;
     height: auto;
+    border:none;
+}
+
+.btn-custom:focus,
+.btn-custom:active,
+.btn-custom:hover {
+    outline: none;
+    border: none;
 }
 
 .img-text{

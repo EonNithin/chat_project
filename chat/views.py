@@ -31,8 +31,12 @@ def get_latest_mp4_filepath(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+
 def ai_process(request):
     return render(request, 'ai_process.html')
+
+def ai_response(request):
+    return render(request, 'ai_response.html')
 
 def ai_chatpage(request):
     return render(request, 'ai_chatpage.html')

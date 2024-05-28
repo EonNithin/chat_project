@@ -249,3 +249,4 @@ function chooseFileToPlay() {
     // Trigger the file input click event
     fileInput.click();
 }
+
