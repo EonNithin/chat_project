@@ -65,6 +65,47 @@ body {
     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
 }
 
+.spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the content horizontally */
+}
+
+.spinner-content {
+    display: flex; /* Ensure both elements are in the same line */
+    align-items: center; /* Align items vertically */
+}
+
+.processing-text {
+    margin-right: 10px;
+}
+
+.bounce-container {
+    display: flex;
+}
+
+.bounce1, .bounce2, .bounce3 {
+    width: 18px;
+    height: 18px;
+    background-color: #333;
+    border-radius: 100%;
+    margin-right: 5px; /* Adjust spacing between bounce divs */
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.bounce1 {
+    animation-delay: -0.32s;
+}
+
+.bounce2 {
+    animation-delay: -0.16s;
+}
+
+@keyframes sk-bouncedelay {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1.0); }
+}
+
 .btn-custom {
     background: none;
     border: none;
@@ -89,4 +130,37 @@ body {
 .img-text{
     font-size: 16px;
     color: #888888; 
+}
+
+#quiz-questions {
+    /* Existing styles... */
+    text-align: left; /* Remove centering */
+    font-size: large;
+}
+  
+#class-summary{
+    text-align: left; /* Remove centering */
+    font-size: large;
+}
+
+.summary-tab.active, /* Active state styles */
+.summary-tab:hover { /* Hover state (optional) */
+    background-color: black;
+    color: white;
+}
+
+.quiz-tab.active, /* Active state styles */
+.quiz-tab:hover { /* Hover state (optional) */
+    background-color: black;
+    color: white;
+}
+
+.quiz-tab:not(.active) { /* Inactive state styles */
+    background-color: white;
+    color: black;
+}
+
+.summary-tab:not(.active) { /* Inactive state styles */
+    background-color: white;
+    color: black;
 }

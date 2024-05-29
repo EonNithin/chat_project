@@ -32,7 +32,7 @@
                     </div>
                     
                     <!-- Card view AI Process -->
-                    <div class="card scrollable-card mb-0">
+                    <div class="card scrollable-card mb-0" style="overflow-y: auto; max-height: 600px;">
                         <div class="ai-process-icon mt-2" id="ai-process-icon">
                             <img src="{% static 'images/AI Process Page Logo.png' %}" width="70%" loading="lazy" alt="AI Process Icon" class="img-fluid">
                         </div>
@@ -50,8 +50,7 @@
                                             <div class="img-text" style="width: 130px;">AI Process Latest Recorded File</div>
                                         </button>
                                     </div>
-                                </div>
-                                
+                                </div>                               
                             </div> 
                             
                             <!-- AI Quiz Generator & Class Recap -->                                                            
@@ -70,20 +69,29 @@
                                     </li>
                                 </ul>                                                                                     
                             </div>
+                            <!--Spinner Animation-->
+                            <div id="spinner" class="spinner" style="display: none;">
+                                <div class="spinner-content justify-content-center">
+                                    <div class="processing-text" style="font-size: 24px; font-weight: bold;">Processing</div>
+                                    <div class="bounce-container">
+                                        <div class="bounce1"></div>
+                                        <div class="bounce2"></div>
+                                        <div class="bounce3"></div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- Tab Content -->
                             <div class="tab-content mt-2" id="myTabContent">
                                 <div class="tab-pane fade show active" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
                                     <!-- Content for Quiz tab -->
                                     <!-- Add your quiz content here -->
-                                    <div class="scrollable-content" id="quiz-questions" style="overflow-y: auto; max-height: 220px;">
-                                        Quiz Questions
+                                    <div class="" id="quiz-questions">                                        
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
                                     <!-- Content for Summary tab -->
                                     <!-- Add your summary content here -->
-                                    <div class="scrollable-content" id="class-summary" style="overflow-y: auto; max-height: 220px;">
-                                        Class Summary
+                                    <div class="" id="class-summary">                                
                                     </div>
                                 </div>
                             </div>

@@ -2,6 +2,16 @@ function aiChatPage(){
     window.location.href = '/ai_chatpage/';
 }
 
+var spinner = document.getElementById('spinner');
+
+function startAnimation() {
+    spinner.style.display = 'block';
+}
+
+function stopAnimation() {
+    spinner.style.display = 'none';
+}
+
 function aiProcessLatestRecordedFile() {
     const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
     const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
@@ -9,16 +19,19 @@ function aiProcessLatestRecordedFile() {
     //const btn1BelowCard = document.getElementById('btn1-below-card');
     //const btn2BelowCard = document.getElementById('btn2-below-card');
 
-    aiProcessLatestfile.style.display = 'none';
-    mp3LatestFileIcon.style.display = 'block';
-    tabsContainer.style.display = 'block';
     //btn1BelowCard.style.display = 'none';
     //btn2BelowCard.style.display = 'none';
+
+    startAnimation();
 
     // Fetch the latest MP3 file path
     fetch('/transcribe_mp3/')
         .then(response => response.json())
         .then(data => {
+            stopAnimation();
+            aiProcessLatestfile.style.display = 'none';
+            mp3LatestFileIcon.style.display = 'block';
+            tabsContainer.style.display = 'block';
             // Print response in console
             console.log('audio_url:', data.latest_file);
             console.log('Summary:', data.response_text);
@@ -31,26 +44,40 @@ function aiProcessLatestRecordedFile() {
         .catch(error => console.error('Error:', error));
 
 }
+
 // Function to format the summary text
 function formatSummary(summary) {
-    return '<p>' + summary.replace(/\n/g, '<br>') + '</p>';
+    return summary.replace(/\n/g, '<br>');
 }
 
 // Function to format the quiz questions text
 function formatQuizQuestions(quizQuestions) {
     let formattedQuestions = '';
-    const questions = quizQuestions.split('\n\n'); // Split by double newlines for each question
+    const questionBlocks = quizQuestions.split('\n\n'); // Split by double newlines for each question block
 
-    questions.forEach(question => {
-        if (question.trim() !== '') {
-            let [q, a] = question.split('Answer:');
-            formattedQuestions += `
-                <div class="quiz-question">
-                    <p>${q.replace(/\n/g, '<br>')}</p>
-                    <p><strong>Answer:</strong> ${a.trim()}</p>
-                </div>
-                <hr>
-            `;
+    questionBlocks.forEach(block => {
+        if (block.trim() !== '') {
+            // Find the position of the answer and split accordingly
+            const answerIndex = block.lastIndexOf('Answer:');
+            if (answerIndex !== -1) {
+                const questionPart = block.slice(0, answerIndex).trim();
+                const answerPart = block.slice(answerIndex).trim();
+
+                formattedQuestions += `
+                    <div class="quiz-question">
+                        <p>${questionPart.replace(/\n/g, '<br>')}</p>
+                        <p><strong>${answerPart.replace(/\n/g, '<br>')}</strong></p>
+                    </div>
+                    <hr>
+                `;
+            } else {
+                formattedQuestions += `
+                    <div class="quiz-question">
+                        <p>${block.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <hr>
+                `;
+            }
         }
     });
 
