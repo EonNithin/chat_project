@@ -6,6 +6,7 @@ import whisper
 from django.conf import settings
 from chat_project import settings
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.views.decorators.csrf import csrf_exempt
 
 # Initialize Ollama outside the view
 llm = Ollama(model="mistral")
@@ -82,6 +83,43 @@ def transcribe_mp3(request):
     else:
         return HttpResponseBadRequest('Invalid request method')
 
+
+@csrf_exempt
+def transcribe_selected_mp3(request):
+    if request.method == 'POST':
+        # Check if a file is uploaded
+        if 'file' not in request.FILES:
+            return JsonResponse({'error': 'No file uploaded'}, status=400)
+
+        uploaded_file = request.FILES['file']
+        file_path = os.path.join(mp3_folderpath, uploaded_file.name)
+
+        # Save the uploaded file
+        with open(file_path, 'wb+') as destination:
+            for chunk in uploaded_file.chunks():
+                destination.write(chunk)
+
+        # Transcribe the uploaded file using Whisper
+        try:
+            model = whisper.load_model("base")
+            result = model.transcribe(file_path)
+            transcribed_text = result["text"]
+
+            # Generate a response from Ollama
+            response_text = llm.invoke(transcribed_text)
+            quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for: {response_text}"
+            quiz_question = llm.invoke(quiz_prompt)
+
+            response_data = {
+                'response_text': response_text,
+                'quiz_question': quiz_question
+            }
+            return JsonResponse(response_data)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return HttpResponseBadRequest('Invalid request method')
 
 def ai_process(request):
     return render(request, 'ai_process.html')

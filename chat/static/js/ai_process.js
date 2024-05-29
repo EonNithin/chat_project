@@ -16,11 +16,6 @@ function aiProcessLatestRecordedFile() {
     const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
     const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
     const tabsContainer = document.getElementById('tabs-container');
-    //const btn1BelowCard = document.getElementById('btn1-below-card');
-    //const btn2BelowCard = document.getElementById('btn2-below-card');
-
-    //btn1BelowCard.style.display = 'none';
-    //btn2BelowCard.style.display = 'none';
 
     startAnimation();
 
@@ -32,17 +27,16 @@ function aiProcessLatestRecordedFile() {
             aiProcessLatestfile.style.display = 'none';
             mp3LatestFileIcon.style.display = 'block';
             tabsContainer.style.display = 'block';
-            // Print response in console
-            console.log('audio_url:', data.latest_file);
-            console.log('Summary:', data.response_text);
-            console.log('Quiz Questions:', data.quiz_question);
 
             // Add summary and quiz questions to corresponding divs
             document.getElementById('class-summary').innerHTML = formatSummary(data.response_text);
             document.getElementById('quiz-questions').innerHTML = formatQuizQuestions(data.quiz_question);
         })
-        .catch(error => console.error('Error:', error));
-
+        .catch(error => {
+            console.error('Error:', error)
+            // Stop animation
+            stopAnimation();
+        });
 }
 
 // Function to format the summary text
@@ -85,6 +79,9 @@ function formatQuizQuestions(quizQuestions) {
 }
 
 function chooseFileToAIProcess() {
+    const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
+    const tabsContainer = document.getElementById('tabs-container');
+
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'audio/mp3'; // Accept only MP3 files
@@ -95,10 +92,37 @@ function chooseFileToAIProcess() {
         
         // Check if a file is selected
         if (selectedFile) {
-            const fileURL = URL.createObjectURL(selectedFile);
-            // Process the file as needed
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            // Display the selected file name
             console.log('Selected file:', selectedFile.name);
-            // Perform any additional processing or uploading here
+            
+            // Start animation
+            startAnimation();
+
+            // Send the file data to the server
+            fetch('/transcribe_selected_mp3/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Stop animation
+                stopAnimation();
+                mp3LatestFileIcon.style.display = 'block';
+                tabsContainer.style.display = 'block';
+
+                // Add summary and quiz questions to corresponding divs
+                document.getElementById('class-summary').innerHTML = formatSummary(data.response_text);
+                document.getElementById('quiz-questions').innerHTML = formatQuizQuestions(data.quiz_question);
+
+            })
+            .catch(error => {
+                console.error('Error:', error)
+                // Stop animation
+                stopAnimation();
+            });
         }
     });
     
