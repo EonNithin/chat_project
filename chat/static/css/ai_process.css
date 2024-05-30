@@ -127,6 +127,24 @@ body {
     border: none;
 }
 
+.nav-link {
+    color: black;
+    background: white;
+    outline: none;
+    border: none;
+}
+
+.nav-link.active {
+    color: white;
+    background: black;
+    outline: none;
+    border: none;
+}
+
+.nav-link:focus {
+    box-shadow: none; /* Remove the focus outline */
+}
+
 .img-text{
     font-size: 16px;
     color: #888888; 

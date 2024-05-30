@@ -98,6 +98,10 @@ function chooseFileToAIProcess() {
             // Display the selected file name
             console.log('Selected file:', selectedFile.name);
             
+            const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
+            const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
+            const tabsContainer = document.getElementById('tabs-container');
+
             // Start animation
             startAnimation();
 
@@ -110,6 +114,7 @@ function chooseFileToAIProcess() {
             .then(data => {
                 // Stop animation
                 stopAnimation();
+                aiProcessLatestfile.style.display = 'none';
                 mp3LatestFileIcon.style.display = 'block';
                 tabsContainer.style.display = 'block';
 
