@@ -32,7 +32,7 @@
                     </div>
                     <!-- Card view AI Process -->
                     <div class="card-body" id="parent-card-body">
-                        <div class="card scrollable-card mb-0" style="overflow-y: auto; max-height: 600px;">
+                        <div class="card scrollable-card mb-0">
                             <div class="ai-process-icon mt-2" id="ai-process-icon">
                                 <img src="{% static 'images/AI Chatbot Logo.png' %}" width="70%" loading="lazy" alt="AI Process Icon" class="img-fluid">
                             </div>
@@ -61,11 +61,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="card-body chat-cardbody">
+                                    <div id="conversationHistory" class="conversation-history">conversation history</div>
+                                </div>
                             </div>
                         </div>
                         <!-- Form for message input and submit button -->
-                        <form class="help-form d-flex align-items-center mt-3 mb-3" action="/submit-form" method="post">
-                            <textarea name="message" rows="4" cols="50" placeholder="Ask Your Question Here ..." class="form-control" style="background-color: #E7EBEF;"></textarea>
+                        <form class="help-form d-flex align-items-center mt-3 mb-3" id="promptForm" action="/submit-form" method="post">
+                            <textarea name="message" rows="4" cols="50" placeholder="Ask Your Question Here ..." class="form-control" id="question" style="background-color: #E7EBEF;"></textarea>
                             <button type="submit" class="btn-submit">
                                 <img src="{% static 'images/Submit Icon.png' %}" alt="Submit" width="30" height="30">
                             </button>

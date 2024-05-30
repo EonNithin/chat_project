@@ -153,8 +153,8 @@ body {
     border-radius: 10px;
     padding: 10px;
     resize: none; /* Disable resizing for better layout */
-    width: 100px; /* Make sure textarea takes full width */
-    height: 100px;
+    width: 100%; /* Make sure textarea takes full width */
+    height: 80px;
 }
 
 .help-form button {
