@@ -43,24 +43,29 @@
                                             <!-- Button for latest file Processing -->
                                             <button class="btn btn-sm" id="ai-process-latest-file" onclick="aiSpeechRecognitionPage()" style="outline: none; border: none;">
                                                 <img src="{% static 'images/Switch to Speech Recognition Icon.png' %}" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">
-                                                <div class="img-text" style="width: 130px;">Switch to AI Speech Recognition</div>
+                                                <div class="img-text" style="width: 110px;">Switch to AI Speech Recognition</div>
                                             </button>   
-                                            
-                                            
-                                            
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body chat-cardbody" style="overflow-y: auto; max-height: 500px; text-align: initial;">
+                                <hr>
+                                <div class="d-flex">
+                                    <button class="btn btn-sm" id="ai-process-latest-file" style="outline: none; border: none;">
+                                        <img src="{% static 'images/Hello Header.png' %}" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">                                    
+                                    </button> 
+                                    <button class="nav-link ms-auto" id="share-tab" data-bs-toggle="tab" data-bs-target="#share" type="button" role="tab" aria-controls="share" aria-selected="false" style="font-size: medium;">
+                                        <img src="{% static 'images/Share Icon.png' %}" alt="Share Icon" style="width: 20px; height:20px;">             
+                                    </button>
+                                </div>
+                                
+                                <div class="card-body chat-cardbody" style="overflow-y: auto; max-height: 200px; text-align: initial;">
                                     <!-- Animation and conversation history -->
-                                    <div class="card-body chat-cardbody">
-                                        <div class="scrollable-content">
-                                            <div id="conversationHistory" class="conversation-history"></div>
-                                            <div id="wave" style="display: none;">
-                                                <span class="dot"></span>
-                                                <span class="dot"></span>
-                                                <span class="dot"></span>
-                                            </div>
+                                    <div class="scrollable-content">
+                                        <div id="conversationHistory" class="conversation-history mb-2"></div>
+                                        <div id="wave" style="display: none;">
+                                            <span class="dot"></span>
+                                            <span class="dot"></span>
+                                            <span class="dot"></span>
                                         </div>
                                     </div>                            
                                 </div>

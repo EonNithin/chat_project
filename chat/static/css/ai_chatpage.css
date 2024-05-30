@@ -21,13 +21,11 @@ body {
     opacity: 1; /* Fixed opacity value */
 }
 
-
 /* Header styles */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
 }
 
 /* Logo styles */
@@ -42,7 +40,6 @@ body {
     height: 80px; /* Adjust height as needed */
     margin-right: 5px;
 }
-
 
 /* Media query for smaller screens */
 @media (max-width: 767px) {
@@ -70,7 +67,6 @@ body {
     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
 }
 
-
 div#wave {
     position: relative;
     margin: 20px;
@@ -85,11 +81,11 @@ div#wave {
 
 .dot {
     display: inline-block;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     margin-right: 3px;
-    background: #E7EBEF;
+    background: black;
     animation: wave 1.3s linear infinite;
 }
 
@@ -109,7 +105,6 @@ div#wave {
         transform: translateY(-15px);
     }
 }
-
 
 .btn-custom {
     background: none;
