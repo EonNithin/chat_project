@@ -133,13 +133,20 @@ def ollama_generate_response(question):
 @csrf_exempt
 def generate_response(request):
     if request.method == 'POST':
-        question = request.POST.get('question', '')
-        print("Question is : \n", question)
-        response = ollama_generate_response(question)
-        print("Response is : \n", response)
-        return JsonResponse({'question': question, 'response': response})
+        try:
+            question = request.POST.get('question', '')
+            if not question:
+                print("POST data is empty or question is not in POST data.")
+                print("Request body:\n", request.body.decode('utf-8'))
+                print("Request POST:\n", request.POST)
+            print("Question is : \n", question)
+            response = ollama_generate_response(question)
+            print("Response is : \n", response)
+            return JsonResponse({'question': question, 'response': response})
+        except Exception as e:
+            print(f"Error processing request: {e}")
+            return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
-
 
 def ai_process(request):
     return render(request, 'ai_process.html')

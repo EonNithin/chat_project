@@ -8,45 +8,40 @@ function autoResize(textarea) {
     console.log("auto resizing");
 }
 
-// Function to scroll to the end of the content inside a div
-function scrollToBottom() {
-    var conversationHistory = document.getElementById("chat-cardBody");
-    conversationHistory.scrollTop = conversationHistory.scrollHeight;
-    console.log("scrolling to bottom");
-}
-
-
-function startAnimation() {
-    spinner.style.display = 'block';
-}
-
-function stopAnimation() {
-    spinner.style.display = 'none';
-}
-
 document.getElementById('question').addEventListener('input', function() {
     autoResize(this);
 });
 
+var dotsAnimation = document.getElementById('wave');
+function startAnimation() {
+    dotsAnimation.style.display = 'inline'; // Make the animation visible
+}
+
+function stopAnimation() {
+    dotsAnimation.style.display = 'none';
+}
+
 document.getElementById('promptForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission
     var question = document.getElementById('question').value;
     document.getElementById('conversationHistory').innerHTML += '<span style="color: red; font-weight: bold;">' + question + '</span><br>';
-    setTimeout(scrollToBottom, 100);
-    startAnimation(); // Start the animation
-    var formData = new FormData(this);
+    //setTimeout(scrollToBottom, 100);
+    startAnimation();
+    const formData = new FormData(this);
     fetch('/generate_response/', {
         method: 'POST',
-        body: formData
+        body: formData,
     })
     .then(response => response.json())
     .then(data => {
         document.getElementById('question').value = ''; // Clear input value
-        stopAnimation(); // Stop the animation
+        stopAnimation();
+        console.log('Question:', data.question);
+        console.log('Response:', data.response);
+        // Display response on the page
         document.getElementById('conversationHistory').innerHTML += data.response + '<br><br><hr><hr>'; // Display response
-        setTimeout(scrollToBottom, 100);
-        console.log(data); 
+        //setTimeout(scrollToBottom, 100);
+
     })
     .catch(error => console.error('Error:', error));
 });
-setTimeout(scrollToBottom, 100);

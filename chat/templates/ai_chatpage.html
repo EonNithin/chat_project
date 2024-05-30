@@ -46,29 +46,29 @@
                                                 <div class="img-text" style="width: 130px;">Switch to AI Speech Recognition</div>
                                             </button>   
                                             
-                                            <!-- Animation and conversation history -->
-                                            <div id="spinner" class="spinner" style="display: none;">
-                                                <div class="spinner-content justify-content-center">
-                                                    <div class="processing-text" style="font-size: 24px; font-weight: bold;">Processing</div>
-                                                    <div class="bounce-container">
-                                                        <div class="bounce1"></div>
-                                                        <div class="bounce2"></div>
-                                                        <div class="bounce3"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                             
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body chat-cardbody">
-                                    <div id="conversationHistory" class="conversation-history">conversation history</div>
+                                <div class="card-body chat-cardbody" style="overflow-y: auto; max-height: 500px; text-align: initial;">
+                                    <!-- Animation and conversation history -->
+                                    <div class="card-body chat-cardbody">
+                                        <div class="scrollable-content">
+                                            <div id="conversationHistory" class="conversation-history"></div>
+                                            <div id="wave" style="display: none;">
+                                                <span class="dot"></span>
+                                                <span class="dot"></span>
+                                                <span class="dot"></span>
+                                            </div>
+                                        </div>
+                                    </div>                            
                                 </div>
                             </div>
                         </div>
                         <!-- Form for message input and submit button -->
-                        <form class="help-form d-flex align-items-center mt-3 mb-3" id="promptForm" action="/submit-form" method="post">
-                            <textarea name="message" rows="4" cols="50" placeholder="Ask Your Question Here ..." class="form-control" id="question" style="background-color: #E7EBEF;"></textarea>
+                        <form class="help-form d-flex align-items-center mt-3 mb-3" id="promptForm">
+                            <textarea name="question" rows="4" cols="50" placeholder="Ask Your Question Here ..." class="form-control" id="question" style="background-color: #E7EBEF;" oninput="autoResize()"></textarea>
                             <button type="submit" class="btn-submit">
                                 <img src="{% static 'images/Submit Icon.png' %}" alt="Submit" width="30" height="30">
                             </button>
