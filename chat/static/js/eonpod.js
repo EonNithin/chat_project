@@ -250,3 +250,7 @@ function chooseFileToPlay() {
     fileInput.click();
 }
 
+function showSettings() {
+    console.log("clicked settings");
+    
+}

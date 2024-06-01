@@ -128,17 +128,13 @@ body {
 }
 
 .nav-link {
-    color: black;
-    background: white;
-    outline: none;
-    border: none;
+    color: black; /* White color for active link */
+    background-color: white; /* Black background for active link */
 }
 
-.nav-link.active {
-    color: white;
-    background: black;
-    outline: none;
-    border: none;
+.nav-item>.nav-link.active {
+    color: white; /* Default color for all links */
+    background-color: black;
 }
 
 .nav-link:focus {
@@ -148,6 +144,7 @@ body {
 .img-text{
     font-size: 16px;
     color: #888888; 
+    width: 100px;
 }
 
 #quiz-questions {

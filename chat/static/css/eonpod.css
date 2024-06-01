@@ -39,8 +39,14 @@ body {
 /* Icon styles */
 #gear-icon img {
     width: auto;
+    border: none;
     height: 80px; /* Adjust height as needed */
     margin-right: 5px;
+}
+
+.popover-body .list-group-item {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
 }
 
 /* Media query for smaller screens */
@@ -162,13 +168,14 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Black box shadow */
 }
 
-.progress-bar {
+.outer-circle >.progress-bar {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    background-color: #e0e0e0;
     border: 10px solid transparent; /* Set initial border color */
     box-sizing: border-box;
     animation: growColor 3s forwards; /* Adjust animation duration as needed */

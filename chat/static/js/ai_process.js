@@ -79,17 +79,22 @@ function formatQuizQuestions(quizQuestions) {
 }
 
 function chooseFileToAIProcess() {
-    const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
-    const tabsContainer = document.getElementById('tabs-container');
-
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'audio/mp3'; // Accept only MP3 files
-    
+
     // Event listener for when a file is selected
     fileInput.addEventListener('change', function(event) {
         const selectedFile = event.target.files[0];
         
+        const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
+        const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
+        const tabsContainer = document.getElementById('tabs-container');
+    
+        aiProcessLatestfile.style.display = 'none';
+        mp3LatestFileIcon.style.display = 'block';
+        tabsContainer.style.display = 'none';
+    
         // Check if a file is selected
         if (selectedFile) {
             const formData = new FormData();
@@ -98,10 +103,6 @@ function chooseFileToAIProcess() {
             // Display the selected file name
             console.log('Selected file:', selectedFile.name);
             
-            const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
-            const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
-            const tabsContainer = document.getElementById('tabs-container');
-
             // Start animation
             startAnimation();
 
@@ -133,4 +134,19 @@ function chooseFileToAIProcess() {
     
     // Trigger the file input click event
     fileInput.click();
+}
+
+const navLinks = document.querySelectorAll('.nav-link');
+
+navLinks.forEach(link => {
+  link.addEventListener('click', handleNavLinkClick);
+});
+
+function handleNavLinkClick(event) {
+  // Remove active class from all links
+  console.log("clicked navlink");
+  navLinks.forEach(link => link.classList.remove('active'));
+  
+  // Add active class to clicked link
+  event.target.classList.add('active');
 }
