@@ -12,33 +12,6 @@ function stopAnimation() {
     spinner.style.display = 'none';
 }
 
-function aiProcessLatestRecordedFile() {
-    const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
-    const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
-    const tabsContainer = document.getElementById('tabs-container');
-
-    startAnimation();
-
-    // Fetch the latest MP3 file path
-    fetch('/transcribe_mp3/')
-        .then(response => response.json())
-        .then(data => {
-            stopAnimation();
-            aiProcessLatestfile.style.display = 'none';
-            mp3LatestFileIcon.style.display = 'block';
-            tabsContainer.style.display = 'block';
-
-            // Add summary and quiz questions to corresponding divs
-            document.getElementById('class-summary').innerHTML = formatSummary(data.response_text);
-            document.getElementById('quiz-questions').innerHTML = formatQuizQuestions(data.quiz_question);
-        })
-        .catch(error => {
-            console.error('Error:', error)
-            // Stop animation
-            stopAnimation();
-        });
-}
-
 // Function to format the summary text
 function formatSummary(summary) {
     return summary.replace(/\n/g, '<br>');
@@ -78,23 +51,53 @@ function formatQuizQuestions(quizQuestions) {
     return formattedQuestions;
 }
 
+function aiProcessLatestRecordedFile() {
+    const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
+    const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
+    const tabsContainer = document.getElementById('tabs-container');
+    
+    aiProcessLatestfile.style.display = 'none';
+    mp3LatestFileIcon.style.display = 'block';
+    startAnimation();
+
+    // Fetch the latest MP3 file path
+    fetch('/transcribe_mp3/')
+        .then(response => response.json())
+        .then(data => {
+            stopAnimation();
+            //aiProcessLatestfile.style.display = 'none';
+            //mp3LatestFileIcon.style.display = 'block';
+            tabsContainer.style.display = 'block';
+
+            // Add summary and quiz questions to corresponding divs
+            document.getElementById('class-summary').innerHTML = formatSummary(data.response_text);
+            document.getElementById('quiz-questions').innerHTML = formatQuizQuestions(data.quiz_question);
+        })
+        .catch(error => {
+            console.error('Error:', error)
+            // Stop animation
+            stopAnimation();
+        });
+}
+
 function chooseFileToAIProcess() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'audio/mp3'; // Accept only MP3 files
+    
+    const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
+    const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
+    const tabsContainer = document.getElementById('tabs-container');
+
+    aiProcessLatestfile.style.display = 'none';
+    mp3LatestFileIcon.style.display = 'block';
+    tabsContainer.style.display = 'none';
 
     // Event listener for when a file is selected
     fileInput.addEventListener('change', function(event) {
         const selectedFile = event.target.files[0];
-        
-        const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
-        const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
-        const tabsContainer = document.getElementById('tabs-container');
-    
-        aiProcessLatestfile.style.display = 'none';
-        mp3LatestFileIcon.style.display = 'block';
-        tabsContainer.style.display = 'none';
-    
+        console.log("Selected file is:"+selectedFile)
+
         // Check if a file is selected
         if (selectedFile) {
             const formData = new FormData();
