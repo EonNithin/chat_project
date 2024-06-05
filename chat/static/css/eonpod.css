@@ -15,8 +15,10 @@ body {
 /* Ensure the container is responsive */
 .container .home-screen{
     background: #E7EBEF; /* Light gray background for home screen */
-    min-height: 100vh; /* Use min-height instead of height */
+    min-height: 98vh; /* Use min-height instead of height */
+    min-width:100%;
     gap: 0px;
+    margin: 12px;
     border-radius: 60px; /* Simplified border-radius */
     opacity: 1; /* Fixed opacity value */
 }
@@ -31,7 +33,7 @@ body {
 /* Logo styles */
 #logo img {
     width: auto;
-    height: 60px; /* Adjust height as needed */
+    height: 7vh; /* Adjust height as needed */
     margin-left: 20px;
 }
 
@@ -41,13 +43,8 @@ body {
     border: none;
     background-color: #E7EBEF;
     outline: none;
-    height: 80px; /* Adjust height as needed */
+    height: 9vh; /* Adjust height as needed */
     margin-right: 5px;
-}
-
-.popover-body .list-group-item {
-    font-size: 0.8rem;
-    padding: 0.25rem 0.5rem;
 }
 
 /* Media query for smaller screens */
@@ -72,14 +69,15 @@ body {
     display: inline-block;
     width: 98%;
     margin-left: 3px;
+    font-size: 24px;
     z-index: 1; /* Ensure dropdown is above buttons */
 }
 
 .custom-dropdown-label {
     background-color: #E1E4E7;
     width: 100%;
-    max-width: 560px;
-    height: 45px;
+    max-width: 100%;
+    height: 70px;
     border-radius: 20px;
     padding: 10px 20px;
     display: flex;
@@ -94,7 +92,7 @@ body {
     position: absolute;
     background-color: #E1E4E7;
     width: 100%;
-    max-width: 560px;
+    max-width: 98%;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     z-index: 2;
     border-radius: 20px;
@@ -135,7 +133,7 @@ body {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    max-width: 600px; /* Adjust as necessary */
+    max-width: 100%; /* Adjust as necessary */
     margin: 0 auto; /* Center align the buttons-div */
     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
     z-index: 0; /* Ensure buttons are below dropdown content */
@@ -151,8 +149,8 @@ body {
 
 .circle-container {
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 20vw;
+    height: 12vh;
 }
 
 .outer-circle {
@@ -273,7 +271,7 @@ body {
 }
 
 .button-text {
-    font-size: 16px;
+    font-size: 24px;
     color: #888888; /* Adjust color as needed */
     text-align: center;
 }
@@ -289,12 +287,12 @@ body {
     margin-left: 3px;
 }
 .buttons-row2 .btn-custom{
-    width: 80px;
+    width: 60%;
     height: auto;
 }
 
 .img-text{
-    font-size: 16px;
+    font-size: 24px;
     color: #888888; 
 }
 
@@ -305,14 +303,15 @@ body {
 
 #videoPlayer {
     width: 100%; /* Make the video player fill its container */
-    height: auto; /* Automatically adjust height based on width */
+    height: 360px; /* Automatically adjust height based on width */
     margin-left: 10px;
+    object-fit: cover;
 }
 
 .new-circle-container {
     position: relative;
-    width: 70px; /* Adjust size as needed */
-    height: 70px; /* Adjust size as needed */
+    width: 10vw; /* Adjust size as needed */
+    height: 6vh; /* Adjust size as needed */
 }
 
 .new-outer-circle {
