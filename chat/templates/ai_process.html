@@ -32,41 +32,41 @@
                     </div>
                     
                     <!-- Card view AI Process -->
-                    <div class="card scrollable-card mb-0">
-                        <div class="ai-process-icon mt-2" id="ai-process-icon">
-                            <img src="{% static 'images/AI Process Page Logo.png' %}" width="70%" loading="lazy" alt="AI Process Icon" class="img-fluid">
+                    <div class="card scrollable-card mb-2">
+                        <div class="ai-process-icon mt-4" id="ai-process-icon">
+                            <img src="{% static 'images/AI Process Page Logo.png' %}" width="80%" loading="lazy" alt="AI Process Icon" class="img-fluid">
                         </div>
                         <div class="card-body">
                             <div class="row d-flex justify-content-center align-items-center">
                                 <div class="col-4 d-flex justify-content-center" style="outline: none; border: none;">
                                     <div style="display: flex; flex-direction: column; align-items: center;">                                    
                                         <!-- Button for latest file Processing -->
-                                        <button class="btn btn-sm" id="ai-process-latest-file" onclick="aiProcessLatestRecordedFile()" style="outline: none; border: none;">
-                                            <img src="{% static 'images/AI Process Latest File.png' %}" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">
-                                            <div class="img-text" style="width: 130px;">AI Process Latest Recorded File</div>
+                                        <button class="btn btn-lg" id="ai-process-latest-file" onclick="aiProcessLatestRecordedFile()" style="outline: none; border: none;">
+                                            <img src="{% static 'images/AI Process Latest File.png' %}" width="200px" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">
+                                            <div class="img-text" >AI Process Latest Recorded File</div>
                                         </button>
-                                        <button class="btn btn-sm" id="mp3-file-icon" style="display: none;" style="outline: none; border: none;">
-                                            <img src="{% static 'images/MP3 File Icon.png' %}" loading="lazy" alt="MP3 Latest File Icon" class="img-fluid">
-                                            <div class="img-text" style="width: 130px;">AI Process Latest Recorded File</div>
+                                        <button class="btn btn-lg" id="mp3-file-icon" style="display: none;" style="outline: none; border: none;">
+                                            <img src="{% static 'images/MP3 File Icon.png' %}" width="200px" loading="lazy" alt="MP3 Latest File Icon" class="img-fluid">
+                                            <div class="img-text" >AI Process Latest Recorded File</div>
                                         </button>
                                     </div>
                                 </div>                               
                             </div>
                             
-                            <div class="ai-response mt-2" style="overflow-y: auto; max-height: 350px;">
+                            <div class="ai-response mt-4" style="overflow-y: auto; max-height: 400px;">
                                 <!-- AI Quiz Generator & Class Recap -->                                                            
                                 <div class="container-fluid mt-1" id="tabs-container" style="display: none;">
                                     <hr>
                                     <ul class="nav nav-tabs justify-content-center" style="display: flex; flex-direction: row; flex-wrap: nowrap;" id="myTab" role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link active" id="quiz-tab" data-bs-toggle="tab" data-bs-target="#quiz" type="button" role="tab" aria-controls="quiz" aria-selected="true" style="font-size: medium; outline: none; border: none;">AI Generated Quiz</button>
+                                            <button class="nav-link active" id="quiz-tab" data-bs-toggle="tab" data-bs-target="#quiz" type="button" role="tab" aria-controls="quiz" aria-selected="true" style="font-size: x-large; outline: none; border: none;">AI Generated Quiz</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab" aria-controls="summary" aria-selected="false" style="font-size: medium; outline: none; border: none;"> AI Generate Class Recap</button>
+                                            <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab" aria-controls="summary" aria-selected="false" style="font-size: x-large; outline: none; border: none;"> AI Generate Class Recap</button>
                                         </li>
-                                        <li class="nav-item mt-3" role="presentation">
-                                            <button class="nav-link-share" id="share-tab" data-bs-toggle="tab" data-bs-target="#share" type="button" role="tab" aria-controls="share" aria-selected="false" style="font-size: medium; outline: none; border: none;">
-                                                <img src="{% static 'images/Share Icon.png' %}" alt="Share Icon" style="width: 20px; height:20px; ">             
+                                        <li class="nav-item mt-1" role="presentation">
+                                            <button class="nav-link-share" id="share-tab" data-bs-toggle="tab" data-bs-target="#share" type="button" role="tab" aria-controls="share" aria-selected="false" style="font-size: x-large; outline: none; border: none;">
+                                                <img src="{% static 'images/Share Icon.png' %}" alt="Share Icon" style="width: 30px; height:30px; ">             
                                             </button>
                                         </li>
                                     </ul>                                                                                     
@@ -74,7 +74,7 @@
                                 <!--Spinner Animation-->
                                 <div id="spinner" class="spinner" style="display: none;">
                                     <div class="spinner-content justify-content-center">
-                                        <div class="processing-text" style="font-size: 24px; font-weight: bold;">Processing</div>
+                                        <div class="processing-text" style="font-size: xx-large; font-weight: bold;">Processing</div>
                                         <div class="bounce-container">
                                             <div class="bounce1"></div>
                                             <div class="bounce2"></div>

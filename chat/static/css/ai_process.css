@@ -27,19 +27,21 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
 }
 
 /* Logo styles */
 #logo img {
     width: auto;
-    height: 60px; /* Adjust height as needed */
+    height: 7vh; /* Adjust height as needed */
     margin-left: 20px;
 }
 
 #home-page-icon img {
     width: auto;
-    height: 80px; /* Adjust height as needed */
+    border: none;
+    background-color: #E7EBEF;
+    outline: none;
+    height: 9vh; /* Adjust height as needed */
     margin-right: 5px;
 }
 
@@ -116,7 +118,7 @@ body {
 }
 
 .btn-custom img{
-    width: 80px;
+    width: 15vw;
     height: auto;
     border:none;
 }
@@ -143,20 +145,20 @@ body {
 }
 
 .img-text{
-    font-size: 16px;
+    font-size: 24px;
     color: #888888; 
-    width: 100px;
+    width: 20vw;
 }
 
 #quiz-questions {
     /* Existing styles... */
     text-align: left; /* Remove centering */
-    font-size: large;
+    font-size: x-large;
 }
   
 #class-summary{
     text-align: left; /* Remove centering */
-    font-size: large;
+    font-size: x-large;
 }
 
 .summary-tab.active, /* Active state styles */
