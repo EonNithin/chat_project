@@ -33,13 +33,16 @@ body {
 /* Logo styles */
 #logo img {
     width: auto;
-    height: 60px; /* Adjust height as needed */
+    height: 7vh; /* Adjust height as needed */
     margin-left: 20px;
 }
 
 #home-page-icon img {
     width: auto;
-    height: 80px; /* Adjust height as needed */
+    border: none;
+    background-color: #E7EBEF;
+    outline: none;
+    height: 9vh; /* Adjust height as needed */
     margin-right: 5px;
 }
 
@@ -83,8 +86,8 @@ div#wave {
 
 .dot {
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
     margin-right: 3px;
     background: black;
@@ -129,11 +132,6 @@ div#wave {
     border: none;
 }
 
-.img-text{
-    font-size: 16px;
-    color: #888888; 
-}
-
 .help-form {
     display: flex;
     align-items: center;
@@ -147,10 +145,11 @@ div#wave {
     background-color: #E7EBEF; /* Background color for the textarea */
     border: 1px solid #ccc;
     border-radius: 10px;
-    padding: 10px;
+    padding: 20px;
+    font-size: x-large;
     resize: none; /* Disable resizing for better layout */
     width: 100%; /* Make sure textarea takes full width */
-    height: 80px;
+    height: 100px;
 }
 
 .help-form button {
@@ -160,7 +159,7 @@ div#wave {
 }
 
 .help-form button img {
-    width: 60px;
+    width: 10vw;
     height: auto;
     margin-right: 5px;
 }
@@ -168,7 +167,8 @@ div#wave {
 .img-text {
     text-align: center;
     margin-top: 5px;
-    font-size: 16px;
+    margin-left: 10px;
+    font-size: 24px;
     color: #888888; 
 }
 

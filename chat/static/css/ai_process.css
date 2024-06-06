@@ -45,7 +45,6 @@ body {
     margin-right: 5px;
 }
 
-
 /* Media query for smaller screens */
 @media (max-width: 500px) {
     .header {
@@ -147,7 +146,7 @@ body {
 .img-text{
     font-size: 24px;
     color: #888888; 
-    width: 20vw;
+    width: 25vw;
 }
 
 #quiz-questions {

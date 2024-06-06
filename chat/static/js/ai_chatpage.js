@@ -30,7 +30,7 @@ function stopAnimation() {
 document.getElementById('promptForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent default form submission
     var question = document.getElementById('question').value;
-    document.getElementById('conversationHistory').innerHTML += '<span style="color: red; font-weight: bold; font-size:large">' + question + '</span><br>';
+    document.getElementById('conversationHistory').innerHTML += '<span style="color: red; font-weight: bold; font-size:30px">' + question + '</span><br>';
     setTimeout(scrollToBottom, 100);
     startAnimation();
     const formData = new FormData(this);
@@ -42,7 +42,7 @@ document.getElementById('promptForm').addEventListener('submit', function(event)
     .then(data => {
         document.getElementById('question').value = ''; // Clear input value
         stopAnimation();
-        document.getElementById('conversationHistory').innerHTML += '<span style="color: black; font-size:large">' + data.response + '</span><br><hr>';
+        document.getElementById('conversationHistory').innerHTML += '<span style="color: black; font-size:30px">' + data.response + '</span><br><hr>';
         setTimeout(scrollToBottom, 100);
     })
     .catch(error => console.error('Error:', error));

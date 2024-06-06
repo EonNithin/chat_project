@@ -34,16 +34,16 @@
                     <div class="card-body" id="parent-card-body">
                         <div class="card scrollable-card mb-0">
                             <div class="ai-process-icon mt-2" id="ai-process-icon">
-                                <img src="{% static 'images/AI Chatbot Logo.png' %}" width="70%" loading="lazy" alt="AI Process Icon" class="img-fluid">
+                                <img src="{% static 'images/AI Chatbot Logo.png' %}" width="80%" loading="lazy" alt="AI Process Icon" class="img-fluid">
                             </div>
                             <div class="card-body">
                                 <div class="row d-flex justify-content-center align-items-center">
                                     <div class="col-4 d-flex justify-content-center" style="outline: none; border: none;">
                                         <div style="display: flex; flex-direction: column; align-items: center;">                                    
                                             <!-- Button for latest file Processing -->
-                                            <button class="btn btn-sm" id="ai-process-latest-file" onclick="aiSpeechRecognitionPage()" style="outline: none; border: none;">
-                                                <img src="{% static 'images/Switch to Speech Recognition Icon.png' %}" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">
-                                                <div class="img-text" style="width: 110px;">Switch to AI Speech Recognition</div>
+                                            <button class="btn btn-lg" id="ai-process-latest-file" onclick="aiSpeechRecognitionPage()" style="outline: none; border: none;">
+                                                <img src="{% static 'images/Switch to Speech Recognition Icon.png' %}" width="150px" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">
+                                                <div class="img-text" style="width: 230px;">Switch to AI Speech Recognition</div>
                                             </button>   
                                         </div>
                                     </div>
@@ -51,14 +51,14 @@
                                 <hr>
                                 <div class="d-flex">
                                     <button class="btn btn-sm" id="ai-process-latest-file" style="outline: none; border: none;">
-                                        <img src="{% static 'images/Hello Header.png' %}" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">                                    
+                                        <img src="{% static 'images/Hello Header.png' %}" width="360px" loading="lazy" alt="AI Process Latest File Icon" class="img-fluid">                                    
                                     </button> 
                                     <button class="nav-link ms-auto" id="share-tab" data-bs-toggle="tab" data-bs-target="#share" type="button" role="tab" aria-controls="share" aria-selected="false" style="font-size: medium;">
-                                        <img src="{% static 'images/Share Icon.png' %}" alt="Share Icon" style="width: 20px; height:20px;">             
+                                        <img src="{% static 'images/Share Icon.png' %}" alt="Share Icon" style="width: 30px; height:30px;">             
                                     </button>
                                 </div>
                                 
-                                <div class="card-body chat-cardbody" style="overflow-y: auto; max-height: 280px; text-align: initial;">
+                                <div class="card-body chat-cardbody" style="overflow-y: auto; max-height: 350px; text-align: initial;">
                                     <!-- Animation and conversation history -->
                                     <div class="scrollable-content">
                                         <div id="conversationHistory" class="conversation-history mb-2"></div>
@@ -75,7 +75,7 @@
                         <form class="help-form d-flex align-items-center mt-3 mb-3" id="promptForm">
                             <textarea name="question" rows="4" cols="50" placeholder="Ask Your Question Here ..." class="form-control" id="question" style="background-color: #E7EBEF;" oninput="autoResize()"></textarea>
                             <button type="submit" class="btn-submit">
-                                <img src="{% static 'images/Submit Icon.png' %}" alt="Submit" width="30" height="30">
+                                <img src="{% static 'images/Submit Icon.png' %}" alt="Submit">
                             </button>
                         </form>
                     </div>
