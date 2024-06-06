@@ -13,7 +13,7 @@ body {
 }
 
 /* Ensure the container is responsive */
-.container .home-screen{
+.container-fluid .home-screen{
     background: #E7EBEF; /* Light gray background for home screen */
     min-height: 98vh; /* Use min-height instead of height */
     min-width:100%;
@@ -22,6 +22,7 @@ body {
     border-radius: 60px; /* Simplified border-radius */
     opacity: 1; /* Fixed opacity value */
 }
+
 /* Header styles */
 .header {
     display: flex;
@@ -146,7 +147,7 @@ body {
 .img-text{
     font-size: 24px;
     color: #888888; 
-    width: 25vw;
+    width: 200px;
 }
 
 #quiz-questions {

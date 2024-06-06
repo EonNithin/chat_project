@@ -13,7 +13,7 @@ body {
 }
 
 /* Ensure the container is responsive */
-.container .home-screen{
+.container-fluid .home-screen{
     background: #E7EBEF; /* Light gray background for home screen */
     min-height: 98vh; /* Use min-height instead of height */
     min-width:100%;
@@ -149,8 +149,8 @@ body {
 
 .circle-container {
     position: relative;
-    width: 20vw;
-    height: 12vh;
+    width: 160px;
+    height: 160px;
 }
 
 .outer-circle {
@@ -303,15 +303,15 @@ body {
 
 #videoPlayer {
     width: 100%; /* Make the video player fill its container */
-    height: 360px; /* Automatically adjust height based on width */
+    height: 340px; /* Automatically adjust height based on width */
     margin-left: 10px;
     object-fit: cover;
 }
 
 .new-circle-container {
     position: relative;
-    width: 10vw; /* Adjust size as needed */
-    height: 6vh; /* Adjust size as needed */
+    width: 80px; /* Adjust size as needed */
+    height: 80px; /* Adjust size as needed */
 }
 
 .new-outer-circle {
