@@ -8,9 +8,26 @@ from chat_project import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 
+import asyncio
+import aiohttp
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.core.files.storage import default_storage
+from django.core.exceptions import SuspiciousFileUploaded  # For improved security
+
+
 # Initialize Ollama outside the view
 llm = Ollama(model="mistral")
+# Transcribe the uploaded file using Whisper
+speech_model = whisper.load_model("base")
+
 conversation_history = []
+
+async def transcribe_async(model, audio_path):
+    # Replace with your actual transcription logic using the model's invoke method
+    # Ensure the model object has an 'invoke' method that accepts the audio path
+    # and returns the transcribed text
+    transcribed_text = model.invoke(audio_path)
+    return transcribed_text
 
 mp3_folderpath = os.path.join(settings.BASE_DIR, "media", "mp3s")
 mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
@@ -51,9 +68,7 @@ def get_latest_mp3_filepath(directory):
 
 def transcribe_latest_file(latest_file):
     try:
-        # Transcribe the uploaded file using Whisper
-        model = whisper.load_model("base")
-        result = model.transcribe(latest_file)
+        result = speech_model.transcribe(latest_file)
         print("\nresponse from whisper:\n", result["text"])
         # Return the transcribed text
         return result["text"]
@@ -69,7 +84,8 @@ def transcribe_mp3(request):
         transcribed_text = transcribe_latest_file(latest_file)
         if transcribed_text:
             response_text = llm.invoke(transcribed_text)
-            quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for : {response_text}"
+            print("\nResponse Summary is :\n", response_text)
+            quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for : {transcribed_text}"
             quiz_question = llm.invoke(quiz_prompt)
             print("Quiz Questions are:\n", quiz_question)
             response_data = {
@@ -93,7 +109,7 @@ def transcribe_selected_mp3(request):
 
         uploaded_file = request.FILES['file']
         file_path = os.path.join(mp3_folderpath, uploaded_file.name)
-
+        print("\nfile uploaded is :\n", file_path)
         # Save the uploaded file
         with open(file_path, 'wb+') as destination:
             for chunk in uploaded_file.chunks():
@@ -101,14 +117,16 @@ def transcribe_selected_mp3(request):
 
         # Transcribe the uploaded file using Whisper
         try:
-            model = whisper.load_model("base")
-            result = model.transcribe(file_path)
+            result =  speech_model.transcribe(file_path)
             transcribed_text = result["text"]
+            print("\nresult of transcribed selected file:\n", transcribed_text)
 
             # Generate a response from Ollama
             response_text = llm.invoke(transcribed_text)
+            print("\nResponse summary is :\n", response_text)
             quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for: {response_text}"
             quiz_question = llm.invoke(quiz_prompt)
+            print("\nQuiz questions are :\n", quiz_question)
 
             response_data = {
                 'response_text': response_text,
