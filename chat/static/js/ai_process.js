@@ -21,33 +21,28 @@ function formatSummary(summary) {
 function formatQuizQuestions(quizQuestions) {
     let formattedQuestions = '';
     const questionBlocks = quizQuestions.split('\n\n'); // Split by double newlines for each question block
-
-    questionBlocks.forEach(block => {
-        if (block.trim() !== '') {
-            // Find the position of the answer and split accordingly
-            const answerIndex = block.lastIndexOf('Answer:');
-            if (answerIndex !== -1) {
-                const questionPart = block.slice(0, answerIndex).trim();
-                const answerPart = block.slice(answerIndex).trim();
-
-                formattedQuestions += `
-                    <div class="quiz-question">
-                        <p>${questionPart.replace(/\n/g, '<br>')}</p>
-                        <p><strong>${answerPart.replace(/\n/g, '<br>')}</strong></p>
-                    </div>
-                    <hr>
-                `;
-            } else {
-                formattedQuestions += `
-                    <div class="quiz-question">
-                        <p>${block.replace(/\n/g, '<br>')}</p>
-                    </div>
-                    <hr>
-                `;
-            }
-        }
+  
+    questionBlocks.forEach((block) => {
+      if (block.trim() !== '') {
+        let formattedBlock = ''; // Initialize an empty string to store the formatted block
+  
+        const lines = block.split('\n'); // Split the block into lines
+  
+        lines.forEach((line) => {
+          if (line.startsWith('Answer:')) { // Check if the line starts with "Answer:"
+            formattedBlock += `<hr><strong>${line.trim()}</strong><hr>\n`; // Add bold formatting and newline
+          } else {
+            formattedBlock += `${line.trim()}\n<br>`; // Add the line without formatting and newline
+          }
+        });
+  
+        formattedQuestions += `
+          <div class="quiz-question">
+            <p>${formattedBlock.replace(/\n/g, '<br>')}</p>
+          </div>
+        `;
+      }
     });
-
     return formattedQuestions;
 }
 
