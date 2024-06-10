@@ -22,15 +22,15 @@ speech_model = whisper.load_model("base")
 
 conversation_history = []
 
+mp3_folderpath = os.path.join(settings.BASE_DIR, "media", "mp3s")
+mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
+
 async def transcribe_async(model, audio_path):
     # Replace with your actual transcription logic using the model's invoke method
     # Ensure the model object has an 'invoke' method that accepts the audio path
     # and returns the transcribed text
     transcribed_text = model.invoke(audio_path)
     return transcribed_text
-
-mp3_folderpath = os.path.join(settings.BASE_DIR, "media", "mp3s")
-mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
 
 def get_latest_mp4_filepath(request):
     try:
