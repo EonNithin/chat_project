@@ -153,12 +153,12 @@ body {
 #quiz-questions {
     /* Existing styles... */
     text-align: left; /* Remove centering */
-    font-size: x-large;
+    font-size: xx-large;
 }
   
 #class-summary{
     text-align: left; /* Remove centering */
-    font-size: x-large;
+    font-size: xx-large;
 }
 
 .summary-tab.active, /* Active state styles */

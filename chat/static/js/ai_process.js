@@ -32,7 +32,7 @@ function formatQuizQuestions(quizQuestions) {
           if (line.startsWith('Answer:')) { // Check if the line starts with "Answer:"
             formattedBlock += `<hr><strong>${line.trim()}</strong><hr>\n`; // Add bold formatting and newline
           } else {
-            formattedBlock += `${line.trim()}\n<br>`; // Add the line without formatting and newline
+            formattedBlock += `${line.trim()}\n`; // Add the line without formatting and newline
           }
         });
   
