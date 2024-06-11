@@ -127,13 +127,16 @@ def transcribe_selected_mp3(request):
     return HttpResponseBadRequest('Invalid request method')
 
 def ollama_generate_response(question):
-    global conversation_history
-    conversation_history.append(question)
-    full_prompt = "\n".join(conversation_history)
-    response_text = llm.invoke(full_prompt)
-    conversation_history.append(response_text)
-    print("Response:\n", response_text, "\n")
-    return response_text
+    try:
+        global conversation_history
+        conversation_history.append(question)
+        full_prompt = "\n".join(conversation_history)
+        response_text = llm.invoke(full_prompt)
+        conversation_history.append(response_text)
+        print("Response:\n", response_text, "\n")
+        return response_text
+    except Exception as e:
+        return "error generating response: {e}"
 
 @csrf_exempt
 def generate_response(request):
