@@ -1,0 +1,184 @@
+body {
+    background: rgb(60, 59, 59); /* Black background for container */
+    margin: 0;
+    gap: 0px;
+}
+
+.container {
+    padding: 0;
+}
+
+.row {
+    width: 100%;
+}
+
+/* Ensure the container is responsive */
+.container-fluid .home-screen{
+    background: #E7EBEF; /* Light gray background for home screen */
+    min-height: 98vh; /* Use min-height instead of height */
+    min-width:100%;
+    gap: 0px;
+    margin: 12px;
+    border-radius: 60px; /* Simplified border-radius */
+    opacity: 1; /* Fixed opacity value */
+}
+
+/* Header styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo styles */
+#logo img {
+    width: auto;
+    height: 7vh; /* Adjust height as needed */
+    margin-left: 20px;
+}
+
+#home-page-icon img {
+    width: auto;
+    border: none;
+    background-color: #E7EBEF;
+    outline: none;
+    height: 9vh; /* Adjust height as needed */
+    margin-right: 5px;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 500px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+    }
+    #logo {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+    #home-page-icon {
+        margin-right: 0;
+        margin-top: 10px;
+    }
+}
+
+.scrollable-card {
+    background-color: #E7EBEF;
+    border: none;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+}
+
+.spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the content horizontally */
+}
+
+.spinner-content {
+    display: flex; /* Ensure both elements are in the same line */
+    align-items: center; /* Align items vertically */
+}
+
+.processing-text {
+    margin-right: 10px;
+}
+
+.bounce-container {
+    display: flex;
+}
+
+.bounce1, .bounce2, .bounce3 {
+    width: 18px;
+    height: 18px;
+    background-color: #333;
+    border-radius: 100%;
+    margin-right: 5px; /* Adjust spacing between bounce divs */
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.bounce1 {
+    animation-delay: -0.32s;
+}
+
+.bounce2 {
+    animation-delay: -0.16s;
+}
+
+@keyframes sk-bouncedelay {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1.0); }
+}
+
+.btn-custom {
+    background: none;
+    border: none;
+    outline: none;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.btn-custom img{
+    width: 15vw;
+    height: auto;
+    border:none;
+}
+
+.btn-custom:focus,
+.btn-custom:active,
+.btn-custom:hover {
+    outline: none;
+    border: none;
+}
+
+.nav-link {
+    color: black; /* White color for active link */
+    background-color: white; /* Black background for active link */
+}
+
+.nav-item>.nav-link.active {
+    color: white; /* Default color for all links */
+    background-color: black;
+}
+
+.nav-link:focus {
+    box-shadow: none; /* Remove the focus outline */
+}
+
+.img-text{
+    font-size: 24px;
+    color: #888888; 
+    width: 200px;
+}
+
+#quiz-questions {
+    /* Existing styles... */
+    text-align: left; /* Remove centering */
+    font-size: xx-large;
+}
+  
+#class-summary{
+    text-align: left; /* Remove centering */
+    font-size: xx-large;
+}
+
+.summary-tab.active, /* Active state styles */
+.summary-tab:hover { /* Hover state (optional) */
+    background-color: black;
+    color: white;
+}
+
+.quiz-tab.active, /* Active state styles */
+.quiz-tab:hover { /* Hover state (optional) */
+    background-color: black;
+    color: white;
+}
+
+.quiz-tab:not(.active) { /* Inactive state styles */
+    background-color: white;
+    color: black;
+}
+
+.summary-tab:not(.active) { /* Inactive state styles */
+    background-color: white;
+    color: black;
+}
