@@ -132,6 +132,7 @@ def ollama_generate_response(question):
         conversation_history.append(question)
         full_prompt = "\n".join(conversation_history)
         response_text = llm.invoke(full_prompt)
+        print("success invoking ollama mistral model")
         conversation_history.append(response_text)
         print("Response:\n", response_text, "\n")
         return response_text
