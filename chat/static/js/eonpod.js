@@ -49,6 +49,7 @@ async function toggleRecording() {
         try {
             await obs.call('StopRecord');
             console.log('Stopped recording');
+            sendRecordingStatus(false);
             startRecordButton.style.display = "block";
             stopRecordButton.style.display = "none";
             textLabelRecord.textContent = "Start Recording";
@@ -64,6 +65,7 @@ async function toggleRecording() {
         try {
             await obs.call('StartRecord');
             console.log('Started recording');
+            sendRecordingStatus(true);
             startRecordButton.style.display = "none";
             stopRecordButton.style.display = "block";
             textLabelRecord.textContent = "Stop Recording";
@@ -82,6 +84,12 @@ async function updateRecordingButton() {
         isRecording = response.outputActive;
         console.log(response);
         console.log(isRecording);
+        if(isRecording){
+            sendRecordingStatus(true);
+        }
+        else{
+            sendRecordingStatus(false);
+        }
         const startRecordButton = document.getElementById('startRecord');
         const stopRecordButton = document.getElementById('stopRecord');
         const textLabelRecord = document.getElementById("text-label-record");
@@ -102,6 +110,40 @@ async function updateRecordingButton() {
     }
 }
 
+function sendRecordingStatus(status) {
+    fetch('/update_recording_status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is sent with the request
+        },
+        body: JSON.stringify({is_recording: status})
+    }).then(response => {
+        if (!response.ok) {
+            console.error('Failed to update recording status on server');
+        }
+    }).catch(error => {
+        console.error('Error in sending recording status:', error);
+    });
+}
+
+// Function to get the CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 async function toggleStreaming(){
     const startStreamButton = document.getElementById("startStream");
     const stopStreamButton = document.getElementById("stopStream");
@@ -113,6 +155,7 @@ async function toggleStreaming(){
         try {
             await obs.call('StopStream');
             console.log('Stopped Streaming');
+            sendStreamingStatus(false);
             startStreamButton.style.display = "block";
             stopStreamButton.style.display = "none";
             textLabelRecord.textContent = "Start Streaming";
@@ -128,6 +171,7 @@ async function toggleStreaming(){
         try {
             await obs.call('StartStream');
             console.log('Started Streaming');
+            sendStreamingStatus(true);
             startStreamButton.style.display = "none";
             stopStreamButton.style.display = "block";
             textLabelRecord.textContent = "Stop Streaming";
@@ -146,6 +190,13 @@ async function updateStreamingButton() {
         isStreaming = response.outputActive;
         console.log(response);
         console.log(isStreaming);
+        if(isStreaming){
+            sendStreamingStatus(true);
+        }
+        else{
+            sendStreamingStatus(false);
+        }
+        
         const startStreamButton = document.getElementById('startStream');
         const stopStreamButton = document.getElementById('stopStream');
         const textLabelRecord = document.getElementById("text-label-stream");
@@ -164,6 +215,40 @@ async function updateStreamingButton() {
     } catch (error) {
         console.error('Failed to get streaming status:', error);
     }
+}
+
+function sendStreamingStatus(status) {
+    fetch('/update_streaming_status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is sent with the request
+        },
+        body: JSON.stringify({is_streaming: status})
+    }).then(response => {
+        if (!response.ok) {
+            console.error('Failed to update streaming status on server');
+        }
+    }).catch(error => {
+        console.error('Error in sending streaming status:', error);
+    });
+}
+
+// Function to get the CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 function aiProcessing(){

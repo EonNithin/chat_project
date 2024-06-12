@@ -186,8 +186,8 @@ body {
         border-right-color: transparent;  /* Progress bar color (initial) */
     }
     100% {
-        border-top-color: #2dd114; /* End with green */
-        border-right-color: #2dd114;  /* Progress bar color (initial) */
+        border-top-color: #91cb6a; /* End with green */
+        border-right-color: #91cb6a;  /* Progress bar color (initial) */
     }
 }
 

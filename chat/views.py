@@ -1,3 +1,4 @@
+import json
 import os
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -166,5 +167,36 @@ def ai_response(request):
 def ai_chatpage(request):
     return render(request, 'ai_chatpage.html')
 
+
+recording_status = False
+
+@csrf_exempt
+def update_recording_status(request):
+    global recording_status
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print("data:", data)
+        recording_status = data.get('is_recording')
+        print("recording status inside:",recording_status)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'failed'}, status=400)
+
+streaming_status = False
+
+@csrf_exempt
+def update_streaming_status(request):
+    global streaming_status
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print("data:", data)
+        streaming_status = data.get('is_streaming', False)
+        print("streaming status inside:",streaming_status)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'failed'}, status=400)
+
 def eonpod(request):
-    return render(request, 'eonpod.html')
+    global recording_status, streaming_status
+    return render(request, 'eonpod.html', {
+        'is_recording': recording_status,
+        'is_streaming': streaming_status
+    })
