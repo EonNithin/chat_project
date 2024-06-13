@@ -33,9 +33,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // Automatically disconnect from OBS on page unload
-window.addEventListener("beforeunload", async () => {
-    await disconnectFromOBS();
-});
+//window.addEventListener("beforeunload", async () => {
+//    await disconnectFromOBS();
+//});
 
 // Function to toggle recording state
 async function toggleRecording() {
