@@ -6,7 +6,7 @@ let isStreaming = false;
 
 async function connectToOBS() {
     try {
-        await obs.connect('ws://0.0.0.0:4455', '654321'); // Connect OBS
+        await obs.connect('ws://0.0.0.0:4459', 'AJ8MIYdZZJV7rLXA'); // Connect OBS
         isConnected = true;
         await updateRecordingButton();
         await updateStreamingButton();
