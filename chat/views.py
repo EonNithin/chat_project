@@ -1,3 +1,4 @@
+import glob
 import json
 import os
 from django.shortcuts import render, redirect
@@ -8,7 +9,7 @@ from django.conf import settings
 from chat_project import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-
+from moviepy.editor import VideoFileClip
 
 # Initialize Ollama outside the view
 llm = Ollama(
@@ -57,6 +58,37 @@ def get_latest_mp3_filepath(directory):
     else:
         return None
 
+def convert_mp4_to_mp3(request, codec="libmp3lame"):
+    files = glob.glob(os.path.join(mp4_folderpath, '*.mp4'))
+    files.sort(key=os.path.getmtime, reverse=True)
+    input_mp4 = files[0] if files else None
+
+    if not input_mp4:
+        print("No MP4 file to convert.")
+        return "Error No file found"
+    try:
+        # Get filename without extension from input path
+        filename, _ = os.path.splitext(os.path.basename(input_mp4))
+
+        # Construct output MP3 filename with .mp3 extension
+        mp3_filepath = os.path.join(mp3_folderpath, filename + ".mp3")
+        print("mp3_filepath:\n",mp3_filepath)
+        # Load the MP4 file
+        video_clip = VideoFileClip(input_mp4)
+        print("working gng next1")
+        # Extract audio from the video
+        audio_clip = video_clip.audio
+        print("working gng next2")
+        
+        # Write the audio to an MP3 file with specified codec
+        audio_clip.write_audiofile(mp3_filepath, codec=codec)
+        print(f"Successfully converted {input_mp4} to {mp3_filepath}")
+
+        return JsonResponse({"success": True, "mp3_filepath": mp3_filepath})
+    except Exception as e:
+        print(f"Error converting MP4: {e}")
+        return JsonResponse({"success": False, "error": str(e)})
+ 
 def transcribe_latest_file(latest_file):
     try:
         result = speech_model.transcribe(latest_file)
@@ -89,7 +121,6 @@ def transcribe_mp3(request):
             return JsonResponse({'error': 'Error transcribing uploaded file'}, status=500)
     else:
         return HttpResponseBadRequest('Invalid request method')
-
 
 @csrf_exempt
 def transcribe_selected_mp3(request):
@@ -169,7 +200,6 @@ def ai_response(request):
 
 def ai_chatpage(request):
     return render(request, 'ai_chatpage.html')
-
 
 recording_status = False
 

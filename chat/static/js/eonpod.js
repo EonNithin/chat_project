@@ -56,6 +56,24 @@ async function toggleRecording() {
             progressBar.style.visibility = "hidden"; // Hide progress bar
             progressBar.style.width = "0%"; // Reset progress bar
             isRecording = false;
+            // Wait for 10 seconds to ensure the MP4 file is saved
+            setTimeout(() => {
+                // Call a function to convert saved mp4 recording file to mp3 file
+                fetch('/convert_mp4_to_mp3/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('MP3 file path is:', data.mp3_filepath);
+                            // You can now use the mp3_filepath variable as needed
+                        } else {
+                            console.error('Error converting MP4 to MP3:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }, 5000); // 10 seconds delay
+                   
         } catch (error) {
             console.error('Failed to stop recording:', error);
             alert('Failed to stop recording. Please refresh page and check your connection to OBS Studio');
