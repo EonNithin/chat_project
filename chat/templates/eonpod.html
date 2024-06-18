@@ -16,104 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/eonpod.css'%}">
     
     <title>EON POD </title>
-    <style>
-    .gear-icon {
-    position: relative;
-    }
 
-    .tooltip-settings {
-    position: absolute;
-    top: 80%; /* Adjust this value to place it correctly below the gear icon */
-    left: -30px;
-    transform: translateX(-50%);
-    background-color: #E7EBEF;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 2;
-    border-radius: 4px;
-    padding: 10px;
-    width: max-content;
-    }
-
-    .list-group {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    }
-
-    .list-group-item {
-    padding: 8px 16px;
-    text-decoration: none;
-    display: block;
-    border: 1px solid #ddd;
-    background-color: #E7EBEF;
-    margin-bottom: 2px;
-    }
-
-    .list-group-item:hover {
-    background-color: #E7EBEF;
-    }
-
-    .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-    }
-
-    .switch input { 
-    opacity: 0;
-    width: 0;
-    height: 0;
-    }
-
-    .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-    }
-
-    .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    }
-
-    input:checked + .slider {
-    background-color: #30D158;
-    }
-
-    input:focus + .slider {
-    box-shadow: 0 0 1px #30D158;
-    }
-
-    input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-    border-radius: 34px;
-    }
-
-    .slider.round:before {
-    border-radius: 50%;
-    }
-
-    </style>
 </head>
 <body>
     <div class="container-fluid">
@@ -124,8 +27,27 @@
                     <div class="header d-flex justify-content-between align-items-center mb-2">
                         <div class="logo" id="logo">
                             <img src="{% static 'images/Logo.png' %}" loading="lazy" alt="Logo" class="img-fluid">
-                        </div>                    
-                        <div class="gear-icon dropdown" id="gear-icon" style="display: flex; flex-direction: column;">
+                        </div>
+                        <!-- Gear icon -->                  
+                        <div class="gear-icon dropdown" id="gear-icon" style="display: flex; flex-direction: row;">
+                            <!-- Buttons for full screen and full screen exit -->
+                            <div class="button-row" style="align-items: right;">
+                                <!-- Full screen button -->
+                                <button id="fullscreenButton" class="button btn btn-outline-secondary" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707m4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707m0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707m-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707"/>
+                                    </svg>
+                                </button>
+
+                                <!-- Full screen exit button -->
+                                <button id="fullscreenExitButton" class="button btn btn-outline-secondary" style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-fullscreen-exit" viewBox="0 0 16 16">
+                                        <path d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5m5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5M0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5m10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0z"/>
+                                    </svg>
+                                </button>
+                            </div>  
+                            
+                            <!-- Gear button-->
                             <button type="button" class="gear-btn-icon" id="gear-btn-icon" onclick="showSettings()" style="border: none;" data-bs-toggle="popover" data-bs-placement="bottom" title="Settings">
                                 <img src="{% static 'images/Gear Icon.png' %}" alt="Gear Icon" width="100px" height="100px">
                             </button>
@@ -358,25 +280,5 @@
     <script src="{% static 'ui/obs-ws.min.js' %}"></script>
     <!-- JS script code -->
     <script src="{% static 'js/eonpod.js' %}"></script>
-    
-    <script>
-        function showSettings(){
-            console.log("clicked settings icon");
-            const settings = document.getElementById('settings');
-            if (settings.style.display === 'none' || settings.style.display === '') {
-                settings.style.display = 'block';
-            } else {
-                settings.style.display = 'none';
-            }
-        }
-        
-        document.addEventListener('click', function(event) {
-            const gearIcon = document.getElementById('gear-icon');
-            const settings = document.getElementById('settings');
-            if (!gearIcon.contains(event.target)) {
-                settings.style.display = 'none';
-            }
-        });
-        </script>
 </body>
 </html>

@@ -335,3 +335,70 @@ function chooseFileToPlay() {
     fileInput.click();
 }
 
+function showSettings(){
+    console.log("clicked settings icon");
+    const settings = document.getElementById('settings');
+    if (settings.style.display === 'none' || settings.style.display === '') {
+        settings.style.display = 'block';
+    } else {
+        settings.style.display = 'none';
+    }
+}
+
+document.addEventListener('click', function(event) {
+    const gearIcon = document.getElementById('gear-icon');
+    const settings = document.getElementById('settings');
+    if (!gearIcon.contains(event.target)) {
+        settings.style.display = 'none';
+    }
+});
+
+// Function to request full screen mode
+function requestFullScreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+    }
+}
+
+// Function to request exit full screen mode
+function exitFullScreen() {
+    const elem = document;
+    if (elem.exitFullscreen) {
+        elem.exitFullscreen();
+    } else if (elem.mozCancelFullScreen) { /* Firefox */
+        elem.mozCancelFullScreen();
+    } else if (elem.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitExitFullscreen();
+    } else if (elem.msExitFullscreen) { /* IE/Edge */
+        elem.msExitFullscreen();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+// Assuming a button with ID "fullscreenButton" triggers full screen mode
+const fullscreenButton = document.getElementById("fullscreenButton");
+const fullscreenExitButton = document.getElementById("fullscreenExitButton");
+
+    if (fullscreenButton) {
+        fullscreenButton.addEventListener("click", function() {
+            fullscreenButton.style.display = 'none'
+            fullscreenExitButton.style.display = 'block'
+            requestFullScreen();
+        });  
+    }
+
+    if (fullscreenExitButton) {
+        fullscreenExitButton.addEventListener("click", function() {
+            fullscreenButton.style.display = 'block'
+            fullscreenExitButton.style.display = 'none'
+            exitFullScreen();
+        });  
+    }
+});

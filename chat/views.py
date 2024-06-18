@@ -11,7 +11,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 # Initialize Ollama outside the view
-llm = Ollama(model="mistral")
+llm = Ollama(
+    base_url='http://localhost:11434',
+    model="mistral"
+)
 # Transcribe the uploaded file using Whisper
 speech_model = whisper.load_model("base")
 

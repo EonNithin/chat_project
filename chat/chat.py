@@ -1,45 +1,64 @@
-#
-# Copyright © 2024 Intel Corporation
-# SPDX-License-Identifier: Apache 2.0
-#
+'''
+#pip -q install langchain huggingface_hub transformers sentence_transformers accelerate bitsandbytes
+#pip install transformers accelerate torch langchain bitsandbytes
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
+from langchain import PromptTemplate  
+from langchain import HuggingFacePipeline
+from langchain import LLMChain
 
-from transformers import AutoTokenizer, TextStreamer
-from intel_npu_acceleration_library import NPUModelForCausalLM
-import torch
+'''
+import os
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+'''
 
-model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+template = """Question: {question}
 
-model = NPUModelForCausalLM.from_pretrained(
-    model_id, dtype=torch.int8, use_cache=True
-).eval()
+Answer: Let's think step by step."""
+
+prompt = PromptTemplate(template=template, input_variables=["question"])
+
+model_id = 'google/flan-t5-small'
 tokenizer = AutoTokenizer.from_pretrained(model_id)
-streamer = TextStreamer(tokenizer, skip_special_tokens=True, skip_prompt=True)
+model = AutoModelForSeq2SeqLM.from_pretrained(model_id, load_in_4bit=True, device_map='auto')
 
-print("Run inference with Llama3 on NPU\n")
-
-
-query = input(">")
-
-
-messages = [
-    {
-        "role": "system",
-        "content": "You are an helpful chatbot that can provide information about the Intel NPU",
-    },
-    {"role": "user", "content": query},
-]
-
-input_ids = tokenizer.apply_chat_template(
-    messages, add_generation_prompt=True, return_tensors="pt"
-).to(model.device)
-
-terminators = [tokenizer.eos_token_id, tokenizer.convert_tokens_to_ids("<|eot_id|>")]
-
-
-outputs = model.generate(
-    input_ids,
-    max_new_tokens=256,
-    eos_token_id=terminators,
-    do_sample=False,
-    streamer=streamer,
+pipeline = pipeline(
+    "text2text-generation",
+    model=model, 
+    tokenizer=tokenizer, 
+    max_length=128
 )
+
+local_llm = HuggingFacePipeline(pipeline=pipeline)
+
+llm_chain = LLMChain(prompt=prompt, llm=local_llm)
+
+question = input("Enter your question: ")
+print(llm_chain.run(question))
+
+'''
+import subprocess
+from langchain_community.llms import Ollama
+
+ollama = Ollama(
+    base_url='http://localhost:11434',
+    model="mistral"
+)
+
+# Example command: List directory contents
+command = ["obs","ollama run mistral"]  # Replace with your desired command and arguments
+print("Command:\n",command)
+# Execute the command and capture the output (optional)
+process = subprocess.run(command, capture_output=True, text=True)  # Set text=True for string output
+print("Process:\n",process)
+output = process.stdout
+print("Output is:\n",output)
+# Print the output (optional)
+if output:
+    print(output)
+
+
+print("ollama instance initialized:",ollama)
+
+prompt = input("enter your question: ")
+response = ollama.invoke(prompt)
+print(response)
