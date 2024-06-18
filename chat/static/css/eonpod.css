@@ -465,7 +465,7 @@ position: relative;
 .tooltip-settings {
 position: absolute;
 top: 80%; /* Adjust this value to place it correctly below the gear icon */
-left: -30px;
+left: 0px;
 transform: translateX(-50%);
 background-color: #E7EBEF;
 box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);

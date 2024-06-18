@@ -76,7 +76,7 @@
                                 
                                 <div class="card-body chat-cardbody" style="overflow-y: auto; max-height: 350px; text-align: initial;">
                                     <!-- Animation and conversation history -->
-                                    <div class="scrollable-content">
+                                    <div class="scrollable-content" id="scrollable-content-history">
                                         <div id="conversationHistory" class="conversation-history mb-2"></div>
                                         <div id="wave" style="display: none;">
                                             <span class="dot"></span>
@@ -89,7 +89,7 @@
                         </div>
                         <!-- Form for message input and submit button -->
                         <form class="help-form d-flex align-items-center mt-3 mb-3" id="promptForm">
-                            <textarea name="question" rows="4" cols="50" placeholder="Ask Your Question Here ..." class="form-control" id="question" style="background-color: #E7EBEF;" oninput="autoResize()"></textarea>
+                            <textarea name="question" rows="4" cols="50" placeholder="Ask Your Question Here ..." class="form-control" id="question" style="background-color: #E7EBEF;" ></textarea>
                             <button type="submit" class="btn-submit">
                                 <img src="{% static 'images/Submit Icon.png' %}" alt="Submit">
                             </button>

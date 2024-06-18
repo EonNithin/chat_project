@@ -4,19 +4,19 @@ function aiSpeechRecognitionPage(){
 
 // Function to scroll to the end of the content inside a div
 function scrollToBottom() {
-    var conversationHistory = document.getElementById("chat-cardbody");
+    var conversationHistory = document.getElementById("conversationHistory");
     conversationHistory.scrollTop = conversationHistory.scrollHeight;
     console.log("scrolling to bottom");
 }
 
-function autoResize(textarea) {
-    textarea.style.height = "auto"; // Reset height to auto
-    textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; // Set height based on scrollHeight, limited to 100px
-}
+// function autoResize(textarea) {
+//     textarea.style.height = "auto"; // Reset height to auto
+//     textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; // Set height based on scrollHeight, limited to 100px
+// }
 
-document.getElementById('question').addEventListener('input', function() {
-    autoResize(this);
-});
+// document.getElementById('question').addEventListener('input', function() {
+//     autoResize(this);
+// });
 
 var dotsAnimation = document.getElementById('wave');
 function startAnimation() {
