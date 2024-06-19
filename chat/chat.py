@@ -6,10 +6,10 @@ from langchain import PromptTemplate
 from langchain import HuggingFacePipeline
 from langchain import LLMChain
 
-'''
+
 import os
 os.environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
-'''
+
 
 template = """Question: {question}
 
