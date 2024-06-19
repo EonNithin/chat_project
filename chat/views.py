@@ -106,15 +106,17 @@ def transcribe_mp3(request):
         print("\nLatest filepath:\n", latest_file)
         transcribed_text = transcribe_latest_file(latest_file)
         if transcribed_text:
-            response_text = llm.invoke(transcribed_text)
-            print("\nResponse Summary is :\n", response_text)
-            quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for : {transcribed_text}"
-            quiz_question = llm.invoke(quiz_prompt)
-            print("Quiz Questions are:\n", quiz_question)
+            #response_text = llm.invoke(transcribed_text)
+            #print("\nResponse Summary is :\n", response_text)
+            #quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for : {transcribed_text}"
+            #quiz_question = llm.invoke(quiz_prompt)
+            #print("Quiz Questions are:\n", quiz_question)
+            print("transcribed text is :", transcribed_text)
             response_data = {
                 'file_path': latest_file,
-                'response_text': response_text,
-                'quiz_question': quiz_question
+                'transcribed_text': transcribed_text
+                #'response_text': response_text,
+                #'quiz_question': quiz_question
             }
             return JsonResponse(response_data)
         else:

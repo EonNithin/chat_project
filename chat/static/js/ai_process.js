@@ -60,14 +60,15 @@ function aiProcessLatestRecordedFile() {
     fetch('/transcribe_mp3/')
         .then(response => response.json())
         .then(data => {
+            console.log("entered transcribed_mp3 fetch")
             stopAnimation();
-            //aiProcessLatestfile.style.display = 'none';
-            //mp3LatestFileIcon.style.display = 'block';
-            tabsContainer.style.display = 'block';
-            myTabContent.style.display = 'block';
+            //tabsContainer.style.display = 'block';
+            //myTabContent.style.display = 'block';
             // Add summary and quiz questions to corresponding divs
-            document.getElementById('class-summary').innerHTML = formatSummary(data.response_text);
-            document.getElementById('quiz-questions').innerHTML = formatQuizQuestions(data.quiz_question);
+            //document.getElementById('class-summary').innerHTML = formatSummary(data.response_text);
+            //document.getElementById('quiz-questions').innerHTML = formatQuizQuestions(data.quiz_question);
+            console.log(data)
+            document.getElementById('transcribed-text').innerHTML = formatSummary(data.transcribed_text);
         })
         .catch(error => {
             console.error('Error:', error)
