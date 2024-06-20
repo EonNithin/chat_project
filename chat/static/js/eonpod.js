@@ -314,6 +314,7 @@ function playLatestRecording() {
         console.log(videoElement);
         videoElement.src = latestFilePath; // Set the src attribute to the media URL
         console.log("video source: " + videoElement.src);
+        videoPlayer.load();
         videoElement.play();
         console.log("video source play: " + videoElement.play());
       } else {
