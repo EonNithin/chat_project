@@ -108,9 +108,6 @@ def transcribe_mp3(request):
         if transcribed_text:
             response_text = llm.invoke(transcribed_text)
             print("\nResponse Summary is :\n", response_text)
-            #quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for : {transcribed_text}"
-            #quiz_question = llm.invoke(quiz_prompt)
-            #print("Quiz Questions are:\n", quiz_question)
             print("transcribed text is :", transcribed_text)
             response_data = {
                 'file_path': latest_file,
@@ -138,7 +135,7 @@ def transcribe_selected_mp3(request):
         with open(file_path, 'wb+') as destination:
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
-
+                
         # Transcribe the uploaded file using Whisper
         try:
             result =  speech_model.transcribe(file_path)
@@ -148,10 +145,6 @@ def transcribe_selected_mp3(request):
             # Generate a response from Ollama
             response_text = llm.invoke(transcribed_text)
             print("\nResponse summary is :\n", response_text)
-            # quiz_prompt = f"Generate 3 Multiple Choice Quiz questions with answers for: {response_text}"
-            # quiz_question = llm.invoke(quiz_prompt)
-            # print("\nQuiz questions are :\n", quiz_question)
-
             response_data = {
                 'response_text': response_text,
                 #'quiz_question': quiz_question
