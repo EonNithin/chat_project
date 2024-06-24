@@ -60,7 +60,7 @@ function aiProcessLatestRecordedFile() {
             console.log("entered transcribed_mp3 fetch")
             stopAnimation();
             console.log(data)
-            document.getElementById('transcribed-text').innerHTML = formatSummary(data.response_text);
+            document.getElementById('transcribed-text').innerHTML = formatSummary(data.transcribed_text);
         })
         .catch(error => {
             console.error('Error:', error)
