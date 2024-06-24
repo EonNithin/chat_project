@@ -143,10 +143,11 @@ def transcribe_selected_mp3(request):
             print("\nresult of transcribed selected file:\n", transcribed_text)
 
             # Generate a response from Ollama
-            response_text = llm.invoke(transcribed_text)
-            print("\nResponse summary is :\n", response_text)
+            #response_text = llm.invoke(transcribed_text)
+            #print("\nResponse summary is :\n", response_text)
             response_data = {
-                'response_text': response_text,
+                'transcribed_text': transcribed_text,
+                #'response_text': response_text,
                 #'quiz_question': quiz_question
             }
             return JsonResponse(response_data)

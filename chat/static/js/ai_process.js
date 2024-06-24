@@ -107,9 +107,9 @@ function chooseFileToAIProcess() {
                 stopAnimation();
                 aiProcessLatestfile.style.display = 'none';
                 mp3LatestFileIcon.style.display = 'block';
-                console.log(data.response_text)
+                console.log(data.response)
                 // Add summary and quiz questions to corresponding divs
-                document.getElementById('class-summary').innerHTML = formatSummary(data.response_text);
+                document.getElementById('transcribed-text').innerHTML = formatSummary(data.transcribed_text);
                 //document.getElementById('quiz-questions').innerHTML = formatQuizQuestions(data.quiz_question);
             })
             .catch(error => {
