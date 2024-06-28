@@ -400,8 +400,8 @@ function exitFullScreen() {
 
 document.addEventListener("DOMContentLoaded", function() {
 // Assuming a button with ID "fullscreenButton" triggers full screen mode
-const fullscreenButton = document.getElementById("fullscreenButton");
-const fullscreenExitButton = document.getElementById("fullscreenExitButton");
+    const fullscreenButton = document.getElementById("fullscreenButton");
+    const fullscreenExitButton = document.getElementById("fullscreenExitButton");
 
     if (fullscreenButton) {
         fullscreenButton.addEventListener("click", function() {
