@@ -1,64 +1,51 @@
-'''
-#pip -q install langchain huggingface_hub transformers sentence_transformers accelerate bitsandbytes
-#pip install transformers accelerate torch langchain bitsandbytes
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
-from langchain import PromptTemplate  
-from langchain import HuggingFacePipeline
-from langchain import LLMChain
 
+from transformers import pipeline, set_seed
 
-import os
-os.environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
+# google/flan-t5-base
+# facebook/blenderbot-400M-distill
+text2text_generator = pipeline("text2text-generation", model="google/flan-t5-base")
 
-template = """Question: {question}
+transcribed_text = """ 
+Listen the minute.com. Eggs. Eggs are great. Where would we be without them? They are so useful. I can't imagine life, or cooking, without them. There are many ways of cooking eggs for breakfast, fried eggs, scrambled eggs, boiled eggs, etc. There are even many ways of cooking these. You can have a runny or hard fried egg, or even have it sunny side up. You can have soft or hard boiled eggs, and fluffy scrambled eggs. There are also many things to put on top of eggs. Mayonnaise, ketchup, salt, soy sauce. Each country has something different. I like cooking with eggs. I particularly like breaking them. I can now do it with one hand without breaking the yolk. Sometimes it gets messy and the egg white starts dripping down your arm.
+"""
+question = f"Explain about: {transcribed_text}"
 
-Answer: Let's think step by step."""
+print("Summarization Response is:\n",summarizer(question, do_sample=False),"\n")
 
-prompt = PromptTemplate(template=template, input_variables=["question"])
+print("Text 2 Text Generation Response is:\n",text2text_generator(question),"\n")
 
-model_id = 'google/flan-t5-small'
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForSeq2SeqLM.from_pretrained(model_id, load_in_4bit=True, device_map='auto')
-
-pipeline = pipeline(
-    "text2text-generation",
-    model=model, 
-    tokenizer=tokenizer, 
-    max_length=128
-)
-
-local_llm = HuggingFacePipeline(pipeline=pipeline)
-
-llm_chain = LLMChain(prompt=prompt, llm=local_llm)
-
-question = input("Enter your question: ")
-print(llm_chain.run(question))
 
 '''
-import subprocess
-from langchain_community.llms import Ollama
 
-ollama = Ollama(
-    base_url='http://localhost:11434',
-    model="mistral"
-)
+from transformers import pipeline, Conversation
 
-# Example command: List directory contents
-command = ["obs","ollama run mistral"]  # Replace with your desired command and arguments
-print("Command:\n",command)
-# Execute the command and capture the output (optional)
-process = subprocess.run(command, capture_output=True, text=True)  # Set text=True for string output
-print("Process:\n",process)
-output = process.stdout
-print("Output is:\n",output)
-# Print the output (optional)
-if output:
-    print(output)
+# Load the chatbot pipeline with the desired model
+chatbot = pipeline(model="facebook/blenderbot-400M-distill")
 
+def run_chatbot():
+  # Start the conversation with the user's opening message
+  conversation = Conversation("Hello, how can I help you?")
 
-print("ollama instance initialized:",ollama)
+  while True:
+    # Get the user's latest message
+    user_message = input("You: ")
 
-prompt = input("enter your question: ")
-response = ollama.invoke(prompt)
-print(response)
+    # Update conversation (optional for context)
+    conversation.add_message({"role": "user", "content": user_message})
+
+    # Get the chatbot's response using the latest message
+    response = chatbot(user_message)
+
+    # Print the chatbot's response
+    print(f"Chatbot: {response[0]['generated_text']}")
+
+    # Check for exit condition (optional)
+    if user_message.lower() == "quit":
+      break
+
+if __name__ == "__main__":
+  run_chatbot()
+
+'''
