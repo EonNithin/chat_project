@@ -10,6 +10,9 @@ from chat_project import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from moviepy.editor import VideoFileClip
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
 
 # Initialize Ollama outside the view
 llm = Ollama(
@@ -23,6 +26,27 @@ conversation_history = []
 
 mp3_folderpath = os.path.join(settings.BASE_DIR, "media", "mp3s")
 mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
+
+
+def login_page(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page
+            return redirect('eonpod')  # Replace with your desired redirect URL
+        else:
+            # Handle invalid login attempt (e.g., display error message)
+            context = {'error_message': 'Invalid username or password'}
+            return render(request, 'login_page.html', context)
+
+    # Handle GET request (display the login form)
+    context = {}  # Create an empty context for the login form template
+    print("Context in login_page is as below:\n", context)
+    return render(request, 'login_page.html', context)
+
 
 def get_latest_mp4_filepath(request):
     try:
@@ -188,12 +212,11 @@ def generate_response(request):
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+@login_required
 def ai_process(request):
     return render(request, 'ai_process.html')
 
-def ai_response(request):
-    return render(request, 'ai_response.html')
-
+@login_required
 def ai_chatpage(request):
     return render(request, 'ai_chatpage.html')
 
@@ -223,6 +246,7 @@ def update_streaming_status(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failed'}, status=400)
 
+@login_required
 def eonpod(request):
     global recording_status, streaming_status
     return render(request, 'eonpod.html', {
