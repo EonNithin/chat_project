@@ -49,18 +49,28 @@ function formatQuizQuestions(quizQuestions) {
 function aiProcessLatestRecordedFile() {
     const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
     const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
+    const tabsContainer = document.getElementById('tabs-container');
+    const myTabContent = document.getElementById('myTabContent');
+    
     aiProcessLatestfile.style.display = 'none';
     mp3LatestFileIcon.style.display = 'block';
+
     startAnimation();
 
     // Fetch the latest MP3 file path
     fetch('/transcribe_mp3/')
         .then(response => response.json())
         .then(data => {
-            console.log("entered transcribed_mp3 fetch")
             stopAnimation();
+            tabsContainer.style.display = 'block';
+            myTabContent.style.display = 'block';
+
+            console.log("entered transcribed_mp3 fetch")
             console.log(data)
-            document.getElementById('transcribed-text').innerHTML = formatSummary(data.response_text);
+
+            // Add summary and quiz questions to corresponding divs
+            document.getElementById('transcription-content').innerHTML = formatSummary(data.transcribed_text);
+            document.getElementById('class-summary-content').innerHTML = formatSummary(data.response_text);
         })
         .catch(error => {
             console.error('Error:', error)
@@ -76,6 +86,8 @@ function chooseFileToAIProcess() {
     
     const aiProcessLatestfile = document.getElementById('ai-process-latest-file');
     const mp3LatestFileIcon = document.getElementById('mp3-file-icon');
+    const tabsContainer = document.getElementById('tabs-container');
+    const myTabContent = document.getElementById('myTabContent');
 
     aiProcessLatestfile.style.display = 'none';
     mp3LatestFileIcon.style.display = 'block';
@@ -95,6 +107,8 @@ function chooseFileToAIProcess() {
             
             // Start animation
             startAnimation();
+            tabsContainer.style.display = 'none';
+            myTabContent.style.display = 'none';
 
             // Send the file data to the server
             fetch('/transcribe_selected_mp3/', {
@@ -105,12 +119,13 @@ function chooseFileToAIProcess() {
             .then(data => {
                 // Stop animation
                 stopAnimation();
-                aiProcessLatestfile.style.display = 'none';
-                mp3LatestFileIcon.style.display = 'block';
+                tabsContainer.style.display = 'block';
+                myTabContent.style.display = 'block';
+
                 console.log(data)
-                // Add summary and quiz questions to corresponding divs
-                document.getElementById('transcribed-text').innerHTML = formatSummary(data.response_text);
-                //document.getElementById('quiz-questions').innerHTML = formatQuizQuestions(data.quiz_question);
+                // Add summary and transcribed text corresponding divs
+                document.getElementById('transcription-content').innerHTML = formatSummary(data.transcribed_text);
+                document.getElementById('class-summary-content').innerHTML = formatSummary(data.response_text);
             })
             .catch(error => {
                 console.error('Error:', error)

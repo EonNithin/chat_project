@@ -12,13 +12,17 @@ from django.views.decorators.csrf import csrf_exempt
 from moviepy.editor import VideoFileClip
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-
+from summarizer.bert import Summarizer, TransformerSummarizer
 
 # Initialize Ollama outside the view
 llm = Ollama(
     base_url='http://localhost:11434',
     model="mistral"
 )
+
+# Initializing bert-summarizer model
+bert_model = Summarizer()
+
 # Transcribe the uploaded file using Whisper
 speech_model = whisper.load_model("base")
 
@@ -123,6 +127,10 @@ def transcribe_latest_file(latest_file):
         print("Error transcribing uploaded file:", e)
         return None
 
+def summarize_transcription(transcribed_text):
+    bert_summary = ''.join(bert_model(body = transcribed_text, min_length = 60))
+    return bert_summary
+
 def transcribe_mp3(request):
     if request.method == 'GET':
         global mp3_folderpath
@@ -130,14 +138,13 @@ def transcribe_mp3(request):
         print("\nLatest filepath:\n", latest_file)
         transcribed_text = transcribe_latest_file(latest_file)
         if transcribed_text:
-            print("transcribed text is :", transcribed_text)
-            response_text = llm.invoke(transcribed_text)
-            print("\nResponse Summary is :\n", response_text)
+            print("transcribed text is :\n", transcribed_text)
+            bert_summary = summarize_transcription(transcribed_text)
+            print("Response summary is \n", bert_summary)
             response_data = {
                 'file_path': latest_file,
                 'transcribed_text': transcribed_text,
-                'response_text': response_text,
-                #'quiz_question': quiz_question
+                'response_text': bert_summary,
             }
             return JsonResponse(response_data)
         else:
@@ -166,13 +173,12 @@ def transcribe_selected_mp3(request):
             transcribed_text = result["text"]
             print("\nresult of transcribed selected file:\n", transcribed_text)
 
-            # Generate a response from Ollama
-            response_text = llm.invoke(transcribed_text)
-            print("\nResponse summary is :\n", response_text)
+            # Generate a response from bert-summerizer
+            bert_summary = summarize_transcription(transcribed_text)
+            print("Response summary is \n", bert_summary)
             response_data = {
                 'transcribed_text': transcribed_text,
-                'response_text': response_text,
-                #'quiz_question': quiz_question
+                'response_text': bert_summary,
             }
             return JsonResponse(response_data)
 
@@ -212,11 +218,11 @@ def generate_response(request):
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-@login_required
+#@login_required
 def ai_process(request):
     return render(request, 'ai_process.html')
 
-@login_required
+#@login_required
 def ai_chatpage(request):
     return render(request, 'ai_chatpage.html')
 
@@ -246,7 +252,7 @@ def update_streaming_status(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failed'}, status=400)
 
-@login_required
+#@login_required
 def eonpod(request):
     global recording_status, streaming_status
     return render(request, 'eonpod.html', {
