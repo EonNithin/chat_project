@@ -24,7 +24,23 @@
                         <div class="logo" id="logo">
                             <img src="{% static 'images/Logo.png' %}" loading="lazy" alt="Logo" class="img-fluid">
                         </div>
-                        <div class="home-page-icon" id="home-page-icon">
+                        <div class="home-page-icon" id="home-page-icon" style="display: flex;">
+                            <!-- Buttons for full screen and full screen exit -->
+                            <div class="button-row" style="align-items: right;">
+                                <!-- Full screen button -->
+                                <button id="fullscreenButton" class="button btn btn-outline-secondary" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707m4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707m0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707m-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707"/>
+                                    </svg>
+                                </button>
+
+                                <!-- Full screen exit button -->
+                                <button id="fullscreenExitButton" class="button btn btn-outline-secondary" style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-fullscreen-exit" viewBox="0 0 16 16">
+                                        <path d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5m5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5M0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5m10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0z"/>
+                                    </svg>
+                                </button>
+                            </div>  
                             <a href="{% url 'eonpod' %}">
                                 <img src="{% static 'images/Home Page Icon.png' %}" loading="lazy" alt="Gear Icon" class="img-fluid">
                             </a>
@@ -57,19 +73,25 @@
                                 <!-- AI Quiz Generator & Class Recap -->                                                            
                                 <div class="container-fluid mt-1" id="tabs-container" style="display: none;">
                                     <hr>
-                                    <ul class="nav nav-tabs justify-content-center" style="display: flex; flex-direction: row; flex-wrap: nowrap;" id="myTab" role="tablist">
+                                    <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link active" id="quiz-tab" data-bs-toggle="tab" data-bs-target="#quiz" type="button" role="tab" aria-controls="quiz" aria-selected="true" style="font-size: x-large; outline: none; border: none;">AI Generated Quiz</button>
+                                            <button class="nav-link active" id="transcription-tab" data-bs-toggle="tab" data-bs-target="#transcription"
+                                                type="button" role="tab" aria-controls="transcription" aria-selected="true"
+                                                style="font-size: x-large; outline: none; border: none;">AI Transcription</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab" aria-controls="summary" aria-selected="false" style="font-size: x-large; outline: none; border: none;"> AI Generate Class Recap</button>
+                                            <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button"
+                                                role="tab" aria-controls="summary" aria-selected="false"
+                                                style="font-size: x-large; outline: none; border: none;">AI Generated Class Summary</button>
                                         </li>
                                         <li class="nav-item mt-1" role="presentation">
-                                            <button class="nav-link-share" id="share-tab" data-bs-toggle="tab" data-bs-target="#share" type="button" role="tab" aria-controls="share" aria-selected="false" style="font-size: x-large; outline: none; border: none;">
-                                                <img src="{% static 'images/Share Icon.png' %}" alt="Share Icon" style="width: 30px; height:30px; ">             
+                                            <button class="nav-link-share" id="share-tab" data-bs-toggle="tab" data-bs-target="#share" type="button"
+                                                role="tab" aria-controls="share" aria-selected="false"
+                                                style="font-size: x-large; outline: none; border: none;">
+                                                <img src="{% static 'images/Share Icon.png' %}" alt="Share Icon" style="width: 30px; height:30px;">
                                             </button>
                                         </li>
-                                    </ul>                                                                                     
+                                    </ul>
                                 </div>
                                 <!--Spinner Animation-->
                                 <div id="spinner" class="spinner" style="display: none;">
@@ -82,19 +104,16 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Tab Content -->
                                 <div class="tab-content mt-2" id="myTabContent" style="display: none;">
-                                    <div class="tab-pane fade show active" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
-                                        <!-- Content for Quiz tab -->
-                                        <!-- Add your quiz content here -->
-                                        <div class="" id="quiz-questions">                                        
-                                        </div>
+                                    <div class="tab-pane fade show active" id="transcription" role="tabpanel" aria-labelledby="transcription-tab">
+                                        <!-- Content for Transcription tab -->
+                                        <div class="transcription" id="transcription-content" style="font-size: xx-large;"></div>
                                     </div>
                                     <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
                                         <!-- Content for Summary tab -->
-                                        <!-- Add your summary content here -->
-                                        <div class="" id="class-summary">                                
-                                        </div>
+                                        <div class="class-summary" id="class-summary-content" style="font-size: xx-large;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -103,7 +122,7 @@
                     </div>
                                     
                     <!-- Buttons below Card View -->
-                    <div class="row d-flex justify-content-center align-items-center mt-2" id="btns-below-card">
+                    <div class="row d-flex justify-content-center align-items-center mt-2 mb-4" id="btns-below-card">
                         <div class="col-4 d-flex justify-content-center align-items-center">
                             <button class="btn btn-sm btn-custom" id="btn1-below-card" onclick="chooseFileToAIProcess()">
                                 <img src="{% static 'images/Choose File AI Process Icon.png' %}" loading="lazy" alt="Choose File AI Process Icon" class="img-fluid">

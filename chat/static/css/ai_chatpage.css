@@ -34,7 +34,7 @@ body {
 /* Logo styles */
 #logo img {
     width: auto;
-    height: 7vh; /* Adjust height as needed */
+    height: 8vh; /* Adjust height as needed */
     margin-left: 20px;
 }
 
@@ -44,6 +44,24 @@ body {
     background-color: #E7EBEF;
     outline: none;
     height: 9vh; /* Adjust height as needed */
+    margin-right: 5px;
+}
+
+#fullscreenButton{
+    width: auto;
+    border: none;
+    background-color: #E7EBEF;
+    outline: none;
+    height: 8vh; /* Adjust height as needed */
+    margin-right: 5px;
+}
+
+#fullscreenExitButton{
+    width: auto;
+    border: none;
+    background-color: #E7EBEF;
+    outline: none;
+    height: 8vh; /* Adjust height as needed */
     margin-right: 5px;
 }
 

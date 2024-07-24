@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-4@h7kau)in6&sb+9rae!8v531ov!m5rvmw*9^@&v=yjhu$o#jd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0','127.0.0.1','192.168.0.128']
 
 
 # Application definition
@@ -126,3 +126,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Session settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
+SESSION_COOKIE_NAME = 'sessionid'  # Default cookie name
+SESSION_COOKIE_AGE = 86400  # Two weeks by default
+SESSION_COOKIE_HTTPONLY = True  # HTTP only by default
+SESSION_COOKIE_SECURE = False  # Set to True if using HTTPS
+SESSION_SAVE_EVERY_REQUEST = False  # Save session on every request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+LOGIN_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login_page/'
+

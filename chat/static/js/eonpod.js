@@ -6,7 +6,7 @@ let isStreaming = false;
 
 async function connectToOBS() {
     try {
-        await obs.connect('ws://0.0.0.0:4455', '654321'); // Connect OBS
+        await obs.connect('ws://0.0.0.0:4459', 'AJ8MIYdZZJV7rLXA'); // Connect OBS
         isConnected = true;
         await updateRecordingButton();
         await updateStreamingButton();
@@ -33,9 +33,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // Automatically disconnect from OBS on page unload
-window.addEventListener("beforeunload", async () => {
-    await disconnectFromOBS();
-});
+//window.addEventListener("beforeunload", async () => {
+//    await disconnectFromOBS();
+//});
 
 // Function to toggle recording state
 async function toggleRecording() {
@@ -49,12 +49,29 @@ async function toggleRecording() {
         try {
             await obs.call('StopRecord');
             console.log('Stopped recording');
+            sendRecordingStatus(false);
             startRecordButton.style.display = "block";
             stopRecordButton.style.display = "none";
             textLabelRecord.textContent = "Start Recording";
             progressBar.style.visibility = "hidden"; // Hide progress bar
             progressBar.style.width = "0%"; // Reset progress bar
             isRecording = false;
+            
+        // Call a function to convert saved mp4 recording file to mp3 file
+        fetch('/convert_mp4_to_mp3/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('MP3 file path is:', data.mp3_filepath);
+                    // You can now use the mp3_filepath variable as needed
+                } else {
+                    console.error('Error converting MP4 to MP3:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+            
         } catch (error) {
             console.error('Failed to stop recording:', error);
             alert('Failed to stop recording. Please refresh page and check your connection to OBS Studio');
@@ -64,6 +81,7 @@ async function toggleRecording() {
         try {
             await obs.call('StartRecord');
             console.log('Started recording');
+            sendRecordingStatus(true);
             startRecordButton.style.display = "none";
             stopRecordButton.style.display = "block";
             textLabelRecord.textContent = "Stop Recording";
@@ -82,6 +100,12 @@ async function updateRecordingButton() {
         isRecording = response.outputActive;
         console.log(response);
         console.log(isRecording);
+        if(isRecording){
+            sendRecordingStatus(true);
+        }
+        else{
+            sendRecordingStatus(false);
+        }
         const startRecordButton = document.getElementById('startRecord');
         const stopRecordButton = document.getElementById('stopRecord');
         const textLabelRecord = document.getElementById("text-label-record");
@@ -102,6 +126,40 @@ async function updateRecordingButton() {
     }
 }
 
+function sendRecordingStatus(status) {
+    fetch('/update_recording_status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is sent with the request
+        },
+        body: JSON.stringify({is_recording: status})
+    }).then(response => {
+        if (!response.ok) {
+            console.error('Failed to update recording status on server');
+        }
+    }).catch(error => {
+        console.error('Error in sending recording status:', error);
+    });
+}
+
+// Function to get the CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 async function toggleStreaming(){
     const startStreamButton = document.getElementById("startStream");
     const stopStreamButton = document.getElementById("stopStream");
@@ -113,6 +171,7 @@ async function toggleStreaming(){
         try {
             await obs.call('StopStream');
             console.log('Stopped Streaming');
+            sendStreamingStatus(false);
             startStreamButton.style.display = "block";
             stopStreamButton.style.display = "none";
             textLabelRecord.textContent = "Start Streaming";
@@ -128,6 +187,7 @@ async function toggleStreaming(){
         try {
             await obs.call('StartStream');
             console.log('Started Streaming');
+            sendStreamingStatus(true);
             startStreamButton.style.display = "none";
             stopStreamButton.style.display = "block";
             textLabelRecord.textContent = "Stop Streaming";
@@ -146,6 +206,13 @@ async function updateStreamingButton() {
         isStreaming = response.outputActive;
         console.log(response);
         console.log(isStreaming);
+        if(isStreaming){
+            sendStreamingStatus(true);
+        }
+        else{
+            sendStreamingStatus(false);
+        }
+        
         const startStreamButton = document.getElementById('startStream');
         const stopStreamButton = document.getElementById('stopStream');
         const textLabelRecord = document.getElementById("text-label-stream");
@@ -164,6 +231,40 @@ async function updateStreamingButton() {
     } catch (error) {
         console.error('Failed to get streaming status:', error);
     }
+}
+
+function sendStreamingStatus(status) {
+    fetch('/update_streaming_status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is sent with the request
+        },
+        body: JSON.stringify({is_streaming: status})
+    }).then(response => {
+        if (!response.ok) {
+            console.error('Failed to update streaming status on server');
+        }
+    }).catch(error => {
+        console.error('Error in sending streaming status:', error);
+    });
+}
+
+// Function to get the CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 function aiProcessing(){
@@ -211,6 +312,7 @@ function playLatestRecording() {
         console.log(videoElement);
         videoElement.src = latestFilePath; // Set the src attribute to the media URL
         console.log("video source: " + videoElement.src);
+        videoPlayer.load();
         videoElement.play();
         console.log("video source play: " + videoElement.play());
       } else {
@@ -250,3 +352,70 @@ function chooseFileToPlay() {
     fileInput.click();
 }
 
+function showSettings(){
+    console.log("clicked settings icon");
+    const settings = document.getElementById('settings');
+    if (settings.style.display === 'none' || settings.style.display === '') {
+        settings.style.display = 'block';
+    } else {
+        settings.style.display = 'none';
+    }
+}
+
+document.addEventListener('click', function(event) {
+    const gearIcon = document.getElementById('gear-icon');
+    const settings = document.getElementById('settings');
+    if (!gearIcon.contains(event.target)) {
+        settings.style.display = 'none';
+    }
+});
+
+// Function to request full screen mode
+function requestFullScreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+    }
+}
+
+// Function to request exit full screen mode
+function exitFullScreen() {
+    const elem = document;
+    if (elem.exitFullscreen) {
+        elem.exitFullscreen();
+    } else if (elem.mozCancelFullScreen) { /* Firefox */
+        elem.mozCancelFullScreen();
+    } else if (elem.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitExitFullscreen();
+    } else if (elem.msExitFullscreen) { /* IE/Edge */
+        elem.msExitFullscreen();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+// Assuming a button with ID "fullscreenButton" triggers full screen mode
+    const fullscreenButton = document.getElementById("fullscreenButton");
+    const fullscreenExitButton = document.getElementById("fullscreenExitButton");
+
+    if (fullscreenButton) {
+        fullscreenButton.addEventListener("click", function() {
+            fullscreenButton.style.display = 'none'
+            fullscreenExitButton.style.display = 'block'
+            requestFullScreen();
+        });  
+    }
+
+    if (fullscreenExitButton) {
+        fullscreenExitButton.addEventListener("click", function() {
+            fullscreenButton.style.display = 'block'
+            fullscreenExitButton.style.display = 'none'
+            exitFullScreen();
+        });  
+    }
+});

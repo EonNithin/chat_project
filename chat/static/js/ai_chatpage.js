@@ -9,14 +9,14 @@ function scrollToBottom() {
     console.log("scrolling to bottom");
 }
 
-function autoResize(textarea) {
-    textarea.style.height = "auto"; // Reset height to auto
-    textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; // Set height based on scrollHeight, limited to 100px
-}
+// function autoResize(textarea) {
+//     textarea.style.height = "auto"; // Reset height to auto
+//     textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; // Set height based on scrollHeight, limited to 100px
+// }
 
-document.getElementById('question').addEventListener('input', function() {
-    autoResize(this);
-});
+// document.getElementById('question').addEventListener('input', function() {
+//     autoResize(this);
+// });
 
 var dotsAnimation = document.getElementById('wave');
 function startAnimation() {
@@ -46,4 +46,54 @@ document.getElementById('promptForm').addEventListener('submit', function(event)
         setTimeout(scrollToBottom, 100);
     })
     .catch(error => console.error('Error:', error));
+});
+
+// Function to request full screen mode
+function requestFullScreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+    }
+}
+
+// Function to request exit full screen mode
+function exitFullScreen() {
+    const elem = document;
+    if (elem.exitFullscreen) {
+        elem.exitFullscreen();
+    } else if (elem.mozCancelFullScreen) { /* Firefox */
+        elem.mozCancelFullScreen();
+    } else if (elem.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitExitFullscreen();
+    } else if (elem.msExitFullscreen) { /* IE/Edge */
+        elem.msExitFullscreen();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+// Assuming a button with ID "fullscreenButton" triggers full screen mode
+const fullscreenButton = document.getElementById("fullscreenButton");
+const fullscreenExitButton = document.getElementById("fullscreenExitButton");
+
+    if (fullscreenButton) {
+        fullscreenButton.addEventListener("click", function() {
+            fullscreenButton.style.display = 'none'
+            fullscreenExitButton.style.display = 'block'
+            requestFullScreen();
+        });  
+    }
+
+    if (fullscreenExitButton) {
+        fullscreenExitButton.addEventListener("click", function() {
+            fullscreenButton.style.display = 'block'
+            fullscreenExitButton.style.display = 'none'
+            exitFullScreen();
+        });  
+    }
 });

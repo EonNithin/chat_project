@@ -1,45 +1,51 @@
-#
-# Copyright © 2024 Intel Corporation
-# SPDX-License-Identifier: Apache 2.0
-#
 
-from transformers import AutoTokenizer, TextStreamer
-from intel_npu_acceleration_library import NPUModelForCausalLM
-import torch
+from transformers import pipeline, set_seed
 
-model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
-model = NPUModelForCausalLM.from_pretrained(
-    model_id, dtype=torch.int8, use_cache=True
-).eval()
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-streamer = TextStreamer(tokenizer, skip_special_tokens=True, skip_prompt=True)
+# google/flan-t5-base
+# facebook/blenderbot-400M-distill
+text2text_generator = pipeline("text2text-generation", model="google/flan-t5-base")
 
-print("Run inference with Llama3 on NPU\n")
+transcribed_text = """ 
+Listen the minute.com. Eggs. Eggs are great. Where would we be without them? They are so useful. I can't imagine life, or cooking, without them. There are many ways of cooking eggs for breakfast, fried eggs, scrambled eggs, boiled eggs, etc. There are even many ways of cooking these. You can have a runny or hard fried egg, or even have it sunny side up. You can have soft or hard boiled eggs, and fluffy scrambled eggs. There are also many things to put on top of eggs. Mayonnaise, ketchup, salt, soy sauce. Each country has something different. I like cooking with eggs. I particularly like breaking them. I can now do it with one hand without breaking the yolk. Sometimes it gets messy and the egg white starts dripping down your arm.
+"""
+question = f"Explain about: {transcribed_text}"
 
+print("Summarization Response is:\n",summarizer(question, do_sample=False),"\n")
 
-query = input(">")
+print("Text 2 Text Generation Response is:\n",text2text_generator(question),"\n")
 
 
-messages = [
-    {
-        "role": "system",
-        "content": "You are an helpful chatbot that can provide information about the Intel NPU",
-    },
-    {"role": "user", "content": query},
-]
+'''
 
-input_ids = tokenizer.apply_chat_template(
-    messages, add_generation_prompt=True, return_tensors="pt"
-).to(model.device)
+from transformers import pipeline, Conversation
 
-terminators = [tokenizer.eos_token_id, tokenizer.convert_tokens_to_ids("<|eot_id|>")]
+# Load the chatbot pipeline with the desired model
+chatbot = pipeline(model="facebook/blenderbot-400M-distill")
 
+def run_chatbot():
+  # Start the conversation with the user's opening message
+  conversation = Conversation("Hello, how can I help you?")
 
-outputs = model.generate(
-    input_ids,
-    max_new_tokens=256,
-    eos_token_id=terminators,
-    do_sample=False,
-    streamer=streamer,
-)
+  while True:
+    # Get the user's latest message
+    user_message = input("You: ")
+
+    # Update conversation (optional for context)
+    conversation.add_message({"role": "user", "content": user_message})
+
+    # Get the chatbot's response using the latest message
+    response = chatbot(user_message)
+
+    # Print the chatbot's response
+    print(f"Chatbot: {response[0]['generated_text']}")
+
+    # Check for exit condition (optional)
+    if user_message.lower() == "quit":
+      break
+
+if __name__ == "__main__":
+  run_chatbot()
+
+'''
