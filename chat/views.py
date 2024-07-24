@@ -4,7 +4,7 @@ import os
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from langchain_community.llms import Ollama
-import whisper
+from whisper_cpp_python import whisper
 from django.conf import settings
 from chat_project import settings
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -23,8 +23,8 @@ llm = Ollama(
 # Initializing bert-summarizer model
 bert_model = Summarizer()
 
-# Transcribe the uploaded file using Whisper
-speech_model = whisper.load_model("base")
+# Initialize the model
+whisper_model = whisper.Whisper(model_path="/home/eon/Desktop/Whisper/whisper.cpp/models/ggml-base.en.bin")
 
 conversation_history = []
 
@@ -119,7 +119,7 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
  
 def transcribe_latest_file(latest_file):
     try:
-        result = speech_model.transcribe(latest_file)
+        result = whisper_model.transcribe(latest_file)
         print("\nresponse from whisper:\n", result["text"])
         # Return the transcribed text
         return result["text"]
@@ -169,7 +169,7 @@ def transcribe_selected_mp3(request):
                 
         # Transcribe the uploaded file using Whisper
         try:
-            result =  speech_model.transcribe(file_path)
+            result =  whisper_model.transcribe(file_path)
             transcribed_text = result["text"]
             print("\nresult of transcribed selected file:\n", transcribed_text)
 
