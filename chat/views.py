@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import subprocess
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from langchain_community.llms import Ollama
@@ -28,29 +29,11 @@ whisper_model = whisper.Whisper(model_path="/home/eon/Desktop/Whisper/whisper.cp
 
 conversation_history = []
 
+files_location = "/home/eon/VSCodeProjects/eonpod-project"
 mp3_folderpath = os.path.join(settings.BASE_DIR, "media", "mp3s")
 mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
 
-
-def login_page(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            # Redirect to a success page
-            return redirect('eonpod')  # Replace with your desired redirect URL
-        else:
-            # Handle invalid login attempt (e.g., display error message)
-            context = {'error_message': 'Invalid username or password'}
-            return render(request, 'login_page.html', context)
-
-    # Handle GET request (display the login form)
-    context = {}  # Create an empty context for the login form template
-    print("Context in login_page is as below:\n", context)
-    return render(request, 'login_page.html', context)
-
+print("mp4 folder path is :\n", mp4_folderpath)
 
 def get_latest_mp4_filepath(request):
     try:
@@ -86,6 +69,29 @@ def get_latest_mp3_filepath(directory):
     else:
         return None
 
+files_location = "/home/eon/VSCodeProjects/eonpod-project"
+
+
+def compress_mp4(input_file, output_file, codec='libx264', crf=23):
+    """
+    Compress an MP4 file to a smaller size using ffmpeg.
+    """
+    try:
+        command = [
+            'ffmpeg',
+            '-i', input_file,       # Input file
+            '-vcodec', codec,       # Video codec
+            '-crf', str(crf),       # Compression quality
+            '-preset', 'slow',      # Compression speed/quality tradeoff
+            output_file             # Output file
+        ]
+
+        # Run the command
+        subprocess.run(command, check=True)
+        print(f"Compressed video saved to: {output_file}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error compressing MP4: {e}")
+
 def convert_mp4_to_mp3(request, codec="libmp3lame"):
     files = glob.glob(os.path.join(mp4_folderpath, '*.mp4'))
     files.sort(key=os.path.getmtime, reverse=True)
@@ -94,29 +100,40 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
     if not input_mp4:
         print("No MP4 file to convert.")
         return "Error No file found"
+    
     try:
         # Get filename without extension from input path
         filename, _ = os.path.splitext(os.path.basename(input_mp4))
 
-        # Construct output MP3 filename with .mp3 extension
-        mp3_filepath = os.path.join(mp3_folderpath, filename + ".mp3")
-        print("mp3_filepath:\n",mp3_filepath)
-        # Load the MP4 file
-        video_clip = VideoFileClip(input_mp4)
-        print("working gng next1")
+        # Create a new folder with the name of the MP4 file inside the files_location
+        folder_path = os.path.join(files_location, filename)
+        os.makedirs(folder_path, exist_ok=True)
+
+        # Construct compressed MP4 filename and path inside the created folder
+        compressed_mp4_filepath = os.path.join(folder_path, filename + "_compressed.mp4")
+        # Compress the MP4 file
+        compress_mp4(input_mp4, compressed_mp4_filepath)
+        
+        # Construct output MP3 filename with .mp3 extension inside the created folder
+        mp3_filepath = os.path.join(folder_path, filename + ".mp3")
+
+        # Load the compressed MP4 file
+        video_clip = VideoFileClip(compressed_mp4_filepath)
+        print("Extracting audio from compressed MP4...")
+
         # Extract audio from the video
         audio_clip = video_clip.audio
-        print("working gng next2")
         
         # Write the audio to an MP3 file with specified codec
         audio_clip.write_audiofile(mp3_filepath, codec=codec)
-        print(f"Successfully converted {input_mp4} to {mp3_filepath}")
+        print(f"Successfully converted {compressed_mp4_filepath} to {mp3_filepath}")
 
         return JsonResponse({"success": True, "mp3_filepath": mp3_filepath})
     except Exception as e:
         print(f"Error converting MP4: {e}")
         return JsonResponse({"success": False, "error": str(e)})
- 
+
+
 def transcribe_latest_file(latest_file):
     try:
         result = whisper_model.transcribe(latest_file)
@@ -218,11 +235,9 @@ def generate_response(request):
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-#@login_required
 def ai_process(request):
     return render(request, 'ai_process.html')
 
-#@login_required
 def ai_chatpage(request):
     return render(request, 'ai_chatpage.html')
 
@@ -252,7 +267,6 @@ def update_streaming_status(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failed'}, status=400)
 
-#@login_required
 def eonpod(request):
     global recording_status, streaming_status
     return render(request, 'eonpod.html', {
