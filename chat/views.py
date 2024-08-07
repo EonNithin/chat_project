@@ -14,6 +14,9 @@ from moviepy.editor import VideoFileClip
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from summarizer.bert import Summarizer, TransformerSummarizer
+from fpdf import FPDF
+from PyPDF2 import PdfReader
+
 
 # Initialize Ollama outside the view
 llm = Ollama(
@@ -69,28 +72,9 @@ def get_latest_mp3_filepath(directory):
     else:
         return None
 
-files_location = "/home/eon/VSCodeProjects/eonpod-project"
-
-
-def compress_mp4(input_file, output_file, codec='libx264', crf=23):
-    """
-    Compress an MP4 file to a smaller size using ffmpeg.
-    """
-    try:
-        command = [
-            'ffmpeg',
-            '-i', input_file,       # Input file
-            '-vcodec', codec,       # Video codec
-            '-crf', str(crf),       # Compression quality
-            '-preset', 'slow',      # Compression speed/quality tradeoff
-            output_file             # Output file
-        ]
-
-        # Run the command
-        subprocess.run(command, check=True)
-        print(f"Compressed video saved to: {output_file}")
-    except subprocess.CalledProcessError as e:
-        print(f"Error compressing MP4: {e}")
+def summarize_transcription(transcribed_text):
+    bert_summary = ''.join(bert_model(body = transcribed_text, min_length = 60))
+    return bert_summary
 
 def convert_mp4_to_mp3(request, codec="libmp3lame"):
     files = glob.glob(os.path.join(mp4_folderpath, '*.mp4'))
@@ -100,39 +84,28 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
     if not input_mp4:
         print("No MP4 file to convert.")
         return "Error No file found"
-    
     try:
         # Get filename without extension from input path
         filename, _ = os.path.splitext(os.path.basename(input_mp4))
 
-        # Create a new folder with the name of the MP4 file inside the files_location
-        folder_path = os.path.join(files_location, filename)
-        os.makedirs(folder_path, exist_ok=True)
-
-        # Construct compressed MP4 filename and path inside the created folder
-        compressed_mp4_filepath = os.path.join(folder_path, filename + "_compressed.mp4")
-        # Compress the MP4 file
-        compress_mp4(input_mp4, compressed_mp4_filepath)
-        
-        # Construct output MP3 filename with .mp3 extension inside the created folder
-        mp3_filepath = os.path.join(folder_path, filename + ".mp3")
-
-        # Load the compressed MP4 file
-        video_clip = VideoFileClip(compressed_mp4_filepath)
-        print("Extracting audio from compressed MP4...")
-
+        # Construct output MP3 filename with .mp3 extension
+        mp3_filepath = os.path.join(mp3_folderpath, filename + ".mp3")
+        print("mp3_filepath:\n",mp3_filepath)
+        # Load the MP4 file
+        video_clip = VideoFileClip(input_mp4)
+        print("working gng next1")
         # Extract audio from the video
         audio_clip = video_clip.audio
+        print("working gng next2")
         
         # Write the audio to an MP3 file with specified codec
         audio_clip.write_audiofile(mp3_filepath, codec=codec)
-        print(f"Successfully converted {compressed_mp4_filepath} to {mp3_filepath}")
+        print(f"Successfully converted {input_mp4} to {mp3_filepath}")
 
         return JsonResponse({"success": True, "mp3_filepath": mp3_filepath})
     except Exception as e:
         print(f"Error converting MP4: {e}")
         return JsonResponse({"success": False, "error": str(e)})
-
 
 def transcribe_latest_file(latest_file):
     try:
@@ -143,10 +116,6 @@ def transcribe_latest_file(latest_file):
     except Exception as e:
         print("Error transcribing uploaded file:", e)
         return None
-
-def summarize_transcription(transcribed_text):
-    bert_summary = ''.join(bert_model(body = transcribed_text, min_length = 60))
-    return bert_summary
 
 def transcribe_mp3(request):
     if request.method == 'GET':
