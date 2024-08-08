@@ -79,10 +79,8 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
         print("mp3_filepath:\n",mp3_filepath)
         # Load the MP4 file
         video_clip = VideoFileClip(input_mp4)
-        print("working gng next1")
         # Extract audio from the video
         audio_clip = video_clip.audio
-        print("working gng next2")
         
         # Write the audio to an MP3 file with specified codec
         audio_clip.write_audiofile(mp3_filepath, codec=codec)
