@@ -2,6 +2,8 @@ import glob
 import json
 import os
 import subprocess
+import time
+import schedule
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from langchain_community.llms import Ollama
@@ -38,6 +40,10 @@ mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
 
 print("mp4 folder path is :\n", mp4_folderpath)
 
+def summarize_transcription(transcribed_text):
+    bert_summary = ''.join(bert_model(body = transcribed_text, min_length = 30))
+    return bert_summary
+
 def get_latest_mp4_filepath(request):
     try:
         # List all files in the directory
@@ -56,11 +62,37 @@ def get_latest_mp4_filepath(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+def convert_mp4_to_mp3(request, codec="libmp3lame"):
+    files = glob.glob(os.path.join(mp4_folderpath, '*.mp4'))
+    files.sort(key=os.path.getmtime, reverse=True)
+    input_mp4 = files[0] if files else None
 
-def summarize_transcription(transcribed_text):
-    bert_summary = ''.join(bert_model(body = transcribed_text, min_length = 60))
-    return bert_summary
+    if not input_mp4:
+        print("No MP4 file to convert.")
+        return "Error No file found"
+    try:
+        # Get filename without extension from input path
+        filename, _ = os.path.splitext(os.path.basename(input_mp4))
 
+        # Construct output MP3 filename with .mp3 extension
+        mp3_filepath = os.path.join(mp3_folderpath, filename + ".mp3")
+        print("mp3_filepath:\n",mp3_filepath)
+        # Load the MP4 file
+        video_clip = VideoFileClip(input_mp4)
+        print("working gng next1")
+        # Extract audio from the video
+        audio_clip = video_clip.audio
+        print("working gng next2")
+        
+        # Write the audio to an MP3 file with specified codec
+        audio_clip.write_audiofile(mp3_filepath, codec=codec)
+        print(f"Successfully converted {input_mp4} to {mp3_filepath}")
+
+        return JsonResponse({"success": True, "mp3_filepath": mp3_filepath})
+    except Exception as e:
+        print(f"Error converting MP4: {e}")
+        return JsonResponse({"success": False, "error": str(e)})
+    
 def ollama_generate_response(question):
     try:
         global conversation_history
@@ -91,9 +123,6 @@ def generate_response(request):
             print(f"Error processing request: {e}")
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
-
-def ai_process(request):
-    return render(request, 'ai_process.html')
 
 def ai_chatpage(request):
     return render(request, 'ai_chatpage.html')

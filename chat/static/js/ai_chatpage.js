@@ -9,15 +9,6 @@ function scrollToBottom() {
     console.log("scrolling to bottom");
 }
 
-// function autoResize(textarea) {
-//     textarea.style.height = "auto"; // Reset height to auto
-//     textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; // Set height based on scrollHeight, limited to 100px
-// }
-
-// document.getElementById('question').addEventListener('input', function() {
-//     autoResize(this);
-// });
-
 var dotsAnimation = document.getElementById('wave');
 function startAnimation() {
     dotsAnimation.style.display = 'inline'; // Make the animation visible

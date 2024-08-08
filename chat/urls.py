@@ -6,7 +6,6 @@ from chat.views import eonpod, ai_chatpage, generate_response, get_latest_mp4_fi
 
 urlpatterns = [
     path('', eonpod, name='eonpod'),
-    #path('ai_process/', ai_process, name='ai_process'),
     path('ai_chatpage/', ai_chatpage, name='ai_chatpage'),
     path('generate_response/', generate_response, name='generate_response'),
     path('update_recording_status/', update_recording_status, name='update_recording_status'),

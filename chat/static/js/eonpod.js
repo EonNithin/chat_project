@@ -267,8 +267,9 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function aiProcessing(){
-    window.location.href = '/ai_process/';
+function aiChatPage(){
+    console.log("aiChatPage function")
+    window.location.href = '/ai_chatpage/';
 }
 
 function toggleDropdown() {
