@@ -95,7 +95,7 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
                 filename, ext = os.path.splitext(os.path.basename(input_mp4))
                 
                 # Construct custom filename with subject value
-                custom_filename = f"{device_name}_{selected_subject}_{filename}{ext}"
+                custom_filename = f"{device_name}_{filename}_{selected_subject}{ext}"
                 custom_input_mp4 = os.path.join(mp4_folderpath, custom_filename)
                 
                 # Rename the file
@@ -103,7 +103,7 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
                 print(f"Renamed MP4 file to: {custom_input_mp4}")
 
                 # Construct output MP3 filename
-                mp3_filepath = os.path.join(mp3_folderpath, f"{device_name}_{selected_subject}_{filename}.mp3")
+                mp3_filepath = os.path.join(mp3_folderpath, f"{device_name}_{filename}_{selected_subject}.mp3")
                 print("MP3 file path:", mp3_filepath)
                 
                 # Load the renamed MP4 file
