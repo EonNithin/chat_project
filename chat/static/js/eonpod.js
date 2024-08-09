@@ -58,19 +58,26 @@ async function toggleRecording() {
             isRecording = false;
             
         // Call a function to convert saved mp4 recording file to mp3 file
-        fetch('/convert_mp4_to_mp3/')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('MP3 file path is:', data.mp3_filepath);
-                    // You can now use the mp3_filepath variable as needed
-                } else {
-                    console.error('Error converting MP4 to MP3:', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        fetch('/convert_mp4_to_mp3/', {
+            method: 'POST', // Ensure method is POST if you're sending data
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is sent with the request
+            },
+            body: JSON.stringify({ subject: selectedSubject }) // Send selectedSubject as part of request body
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('MP3 file path is:', data.mp3_filepath);
+                // You can now use the mp3_filepath variable as needed
+            } else {
+                console.error('Error converting MP4 to MP3:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
             
         } catch (error) {
             console.error('Failed to stop recording:', error);
@@ -272,6 +279,10 @@ function aiChatPage(){
     window.location.href = '/ai_chatpage/';
 }
 
+// Handling dropdown select subject
+
+let selectedSubject = '';
+
 function toggleDropdown() {
     document.getElementById("dropdown-content").classList.toggle("show");
 }
@@ -280,6 +291,8 @@ function selectOption(option) {
     const dropdownLabel = document.getElementById("dropdown-label").children[0];
     if (dropdownLabel) {
         dropdownLabel.textContent = option;
+        selectedSubject = option; // Store the selected option
+        console.log(selectedSubject);
     } else {
         console.error('Dropdown label element not found.');
     }
