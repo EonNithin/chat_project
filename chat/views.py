@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 from summarizer.bert import Summarizer, TransformerSummarizer
 from fpdf import FPDF
 from PyPDF2 import PdfReader
-
+import socket
 
 # Initialize Ollama outside the view
 llm = Ollama(
@@ -39,6 +39,13 @@ mp3_folderpath = os.path.join(settings.BASE_DIR, "media", "mp3s")
 mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
 
 print("mp4 folder path is :\n", mp4_folderpath)
+
+def get_device_name():
+    try:
+        return socket.gethostname()
+    except Exception as e:
+        print(f"Error getting device name: {e}")
+        return "unknown_device"
 
 def summarize_transcription(transcribed_text):
     bert_summary = ''.join(bert_model(body = transcribed_text, min_length = 30))
@@ -70,6 +77,10 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
             selected_subject = data.get('subject', '')
             print(f"Selected subject: {selected_subject}")
 
+            # Get device name
+            device_name = get_device_name()
+            print(f"Device name: {device_name}")
+
             # Find the latest MP4 file
             files = glob.glob(os.path.join(mp4_folderpath, '*.mp4'))
             files.sort(key=os.path.getmtime, reverse=True)
@@ -84,7 +95,7 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
                 filename, ext = os.path.splitext(os.path.basename(input_mp4))
                 
                 # Construct custom filename with subject value
-                custom_filename = f"{selected_subject}_{filename}{ext}"
+                custom_filename = f"{device_name}_{selected_subject}_{filename}{ext}"
                 custom_input_mp4 = os.path.join(mp4_folderpath, custom_filename)
                 
                 # Rename the file
@@ -92,7 +103,7 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
                 print(f"Renamed MP4 file to: {custom_input_mp4}")
 
                 # Construct output MP3 filename
-                mp3_filepath = os.path.join(mp3_folderpath, f"{selected_subject}_{filename}.mp3")
+                mp3_filepath = os.path.join(mp3_folderpath, f"{device_name}_{selected_subject}_{filename}.mp3")
                 print("MP3 file path:", mp3_filepath)
                 
                 # Load the renamed MP4 file
