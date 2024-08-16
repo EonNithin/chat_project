@@ -69,6 +69,7 @@ def get_latest_mp4_filepath(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+@csrf_exempt
 def convert_mp4_to_mp3(request, codec="libmp3lame"):
     if request.method == 'POST':
         try:
