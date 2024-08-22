@@ -31,11 +31,18 @@ document.getElementById('promptForm').addEventListener('submit', function(event)
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('question').value = ''; // Clear input value
-        stopAnimation();
-        document.getElementById('conversationHistory').innerHTML += '<span style="color: black; font-size:30px">' + data.response + '</span><br><hr>';
-        setTimeout(scrollToBottom, 100);
-    })
+    document.getElementById('question').value = ''; // Clear input value
+    stopAnimation();
+    
+    // Convert newlines to <br> tags for proper HTML rendering
+    const formattedResponse = data.response.replace(/\n/g, '<br>');
+    
+    // Insert the formatted response into the conversation history
+    document.getElementById('conversationHistory').innerHTML += 
+        '<span style="color: black; font-size:30px">' + formattedResponse + '</span><br><hr>';
+    
+    setTimeout(scrollToBottom, 100);
+})
     .catch(error => console.error('Error:', error));
 });
 
