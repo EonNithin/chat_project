@@ -16,8 +16,6 @@ from moviepy.editor import VideoFileClip
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from summarizer.bert import Summarizer, TransformerSummarizer
-from fpdf import FPDF
-from PyPDF2 import PdfReader
 import socket
 
 # Initialize Ollama outside the view
