@@ -9,42 +9,23 @@ from django.conf import settings
 from chat_project import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from moviepy.editor import VideoFileClip
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from summarizer.bert import Summarizer, TransformerSummarizer
-import socket
+from .processFiles import process_files
 
-# Initialize Ollama outside the view
-llm = Ollama(
-    base_url='http://localhost:11434',
-    model="mistral"
-)
+llm = Ollama(base_url='http://localhost:11434', model="mistral")
 
-# Initializing bert-summarizer model
-bert_model = Summarizer()
-
-# Initialize the model
-whisper_model = whisper.Whisper(model_path="/home/eon/Desktop/Whisper/whisper.cpp/models/ggml-base.en.bin")
-
-conversation_history = []
-
-files_location = "/home/eon/VSCodeProjects/eonpod-project"
-mp3_folderpath = os.path.join(settings.BASE_DIR, "media", "mp3s")
-mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
-
-print("mp4 folder path is :\n", mp4_folderpath)
-
-def get_device_name():
-    try:
-        return socket.gethostname()
-    except Exception as e:
-        print(f"Error getting device name: {e}")
-        return "unknown_device"
-
-def summarize_transcription(transcribed_text):
-    bert_summary = ''.join(bert_model(body = transcribed_text, min_length = 30))
-    return bert_summary
+@csrf_exempt
+def process_mp4files(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            print("data is: \n", data)
+            selected_subject = data.get('subject', '')
+            print(f"Selected subject: {selected_subject}")
+            response = process_files(selected_subject)  # Pass the data to the function
+            return response
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+    return JsonResponse({"success": False, "error": "Invalid request method"})
 
 def get_latest_mp4_filepath(request):
     try:
@@ -63,65 +44,9 @@ def get_latest_mp4_filepath(request):
         return JsonResponse({'latest_file': media_url})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-'''
-@csrf_exempt
-def convert_mp4_to_mp3(request, codec="libmp3lame"):
-    if request.method == 'POST':
-        try:
-            # Parse the JSON data from the request body
-            data = json.loads(request.body)
-            selected_subject = data.get('subject', '')
-            print(f"Selected subject: {selected_subject}")
 
-            # Get device name
-            device_name = get_device_name()
-            print(f"Device name: {device_name}")
+conversation_history = []
 
-            # Find the latest MP4 file
-            files = glob.glob(os.path.join(mp4_folderpath, '*.mp4'))
-            files.sort(key=os.path.getmtime, reverse=True)
-            input_mp4 = files[0] if files else None
-
-            if not input_mp4:
-                print("No MP4 file to convert.")
-                return JsonResponse({"success": False, "error": "No MP4 file found"})
-
-            try:
-                # Get filename without extension and extension
-                filename, ext = os.path.splitext(os.path.basename(input_mp4))
-                
-                # Construct custom filename with subject value
-                custom_filename = f"{device_name}_{filename}_{selected_subject}{ext}"
-                custom_input_mp4 = os.path.join(mp4_folderpath, custom_filename)
-                
-                # Rename the file
-                os.rename(input_mp4, custom_input_mp4)
-                print(f"Renamed MP4 file to: {custom_input_mp4}")
-
-                # Construct output MP3 filename
-                mp3_filepath = os.path.join(mp3_folderpath, f"{device_name}_{filename}_{selected_subject}.mp3")
-                print("MP3 file path:", mp3_filepath)
-                
-                # Load the renamed MP4 file
-                video_clip = VideoFileClip(custom_input_mp4)
-                # Extract audio from the video
-                audio_clip = video_clip.audio
-                
-                # Write the audio to an MP3 file with specified codec
-                audio_clip.write_audiofile(mp3_filepath, codec=codec)
-                print(f"Successfully converted {custom_input_mp4} to {mp3_filepath}")
-
-                return JsonResponse({"success": True, "mp3_filepath": mp3_filepath})
-            except Exception as e:
-                print(f"Error converting MP4: {e}")
-                return JsonResponse({"success": False, "error": str(e)})
-        except Exception as e:
-            print(f"Error: {e}")
-            return JsonResponse({"success": False, "error": str(e)})
-
-    return JsonResponse({"success": False, "error": "Invalid request method"})
-'''
-    
 def ollama_generate_response(question):
     try:
         global conversation_history

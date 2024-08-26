@@ -75,7 +75,7 @@ async function toggleRecording() {
             isRecording = false;
             
         // Call a function to convert saved mp4 recording file to mp3 file
-        fetch('/convert_mp4_to_mp3/', {
+        fetch('/process_mp4files/', {
             method: 'POST', // Ensure method is POST if you're sending data
             headers: {
                 'Content-Type': 'application/json',
