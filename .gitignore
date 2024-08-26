@@ -9,3 +9,6 @@ __pycache__/*
 chat/__pycache__/*
 chat_project/__pycache__/*
 chat/migrations/__pycache__/*
+
+# Ignore specific model file
+chat_project/models/ggml-base.en.bin
