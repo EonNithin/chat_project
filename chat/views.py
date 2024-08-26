@@ -1,9 +1,6 @@
 import glob
 import json
 import os
-import subprocess
-import time
-import schedule
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from langchain_community.llms import Ollama
@@ -66,7 +63,7 @@ def get_latest_mp4_filepath(request):
         return JsonResponse({'latest_file': media_url})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
+'''
 @csrf_exempt
 def convert_mp4_to_mp3(request, codec="libmp3lame"):
     if request.method == 'POST':
@@ -123,16 +120,15 @@ def convert_mp4_to_mp3(request, codec="libmp3lame"):
             return JsonResponse({"success": False, "error": str(e)})
 
     return JsonResponse({"success": False, "error": "Invalid request method"})
-
+'''
     
 def ollama_generate_response(question):
     try:
         global conversation_history
-        conversation_history.append(question)
-        full_prompt = "\n".join(conversation_history)
-        response_text = llm.invoke(full_prompt)
-        print("success invoking ollama mistral model")
-        conversation_history.append(response_text)
+        # full_prompt = "\n".join(conversation_history)
+        response_text = llm.invoke(question)
+        # print("success invoking ollama mistral model")
+        #conversation_history.append(response_text)
         print("Response:\n", response_text, "\n")
         return response_text
     except Exception as e:
