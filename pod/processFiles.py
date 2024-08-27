@@ -67,17 +67,17 @@ def process_files(mp4_filename, mp4_filepath, subject, codec="libmp3lame"):
     try:
         # Get device name
         device_name = get_device_name()
-
+ 
         # Define the folder path based on the provided filename and subject
         custom_foldername = f"{device_name}_{os.path.splitext(mp4_filename)[0]}_{subject}"
         folder_path = os.path.join(media_folderpath, custom_foldername)
 
         # Define the file paths for the expected outputs
-        processed_mp4_filepath = os.path.join(folder_path, mp4_filename)
-        mp3_filepath = os.path.join(folder_path, f"{os.path.splitext(mp4_filename)[0]}.mp3")
-        transcription_txt_filepath = os.path.join(folder_path, f"{os.path.splitext(mp4_filename)[0]}_transcription.txt")
-        summary_txt_filepath = os.path.join(folder_path, f"{os.path.splitext(mp4_filename)[0]}_summary.txt")
-        quiz_txt_filepath = os.path.join(folder_path, f"{os.path.splitext(mp4_filename)[0]}_quiz.txt")
+        processed_mp4_filepath = os.path.join(folder_path, f"{custom_foldername}.mp4")
+        mp3_filepath = os.path.join(folder_path, f"{custom_foldername}.mp3")
+        transcription_txt_filepath = os.path.join(folder_path, f"{custom_foldername}_transcription.txt")
+        summary_txt_filepath = os.path.join(folder_path, f"{custom_foldername}_summary.txt")
+        quiz_txt_filepath = os.path.join(folder_path, f"{custom_foldername}_quiz.txt")
 
         # Create the folder if it doesn't exist
         os.makedirs(folder_path, exist_ok=True)
