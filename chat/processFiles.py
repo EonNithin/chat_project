@@ -1,6 +1,7 @@
 import glob
 import os
 import json
+from django.conf import settings
 from moviepy.editor import VideoFileClip
 from whisper_cpp_python import whisper
 from summarizer.bert import Summarizer
@@ -9,13 +10,12 @@ from django.http import JsonResponse
 import socket
 
 # Initialize the models
-whisper_model = whisper.Whisper(model_path="/home/eon/Desktop/Whisper/whisper.cpp/models/ggml-base.en.bin")
+whisper_model = whisper.Whisper(model_path=os.path.join(settings.BASE_DIR, 'models', 'ggml-base.en.bin'))
 bert_model = Summarizer()
 llm = Ollama(base_url='http://localhost:11434', model="mistral")
 
 # Define the base path for media files
-media_folderpath = "/home/eon/VSCodeProjects/eonpod-project/chat_project/media/processed_files"
-
+media_folderpath = os.path.join(settings.BASE_DIR, 'media', 'processed_files')
 
 def get_device_name():
     try:
@@ -73,7 +73,7 @@ def process_files(subject, codec="libmp3lame"):
 
         for input_mp4 in files:
             filename, _ = os.path.splitext(os.path.basename(input_mp4))
-            custom_foldername = f"{device_name}{filename}{subject}"
+            custom_foldername = f"{device_name}_{filename}_{subject}"
             folder_path = os.path.join(media_folderpath, custom_foldername)
 
             # Define the file paths for the expected outputs

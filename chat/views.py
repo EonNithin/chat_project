@@ -13,6 +13,10 @@ from .processFiles import process_files
 
 llm = Ollama(base_url='http://localhost:11434', model="mistral")
 
+# Define the base path for media files
+media_folderpath = os.path.join(settings.BASE_DIR, 'media', 'processed_files')
+
+
 @csrf_exempt
 def process_mp4files(request):
     if request.method == 'POST':
@@ -29,18 +33,29 @@ def process_mp4files(request):
 
 def get_latest_mp4_filepath(request):
     try:
-        # List all files in the directory
-        files = [f for f in os.listdir(mp4_folderpath) if os.path.isfile(os.path.join(mp4_folderpath, f))]
+        # List all folders in the media directory
+        folders = [f for f in os.listdir(media_folderpath) if os.path.isdir(os.path.join(media_folderpath, f))]
         
-        if not files:
-            return JsonResponse({'error': 'No files found'}, status=404)
+        if not folders:
+            return JsonResponse({'error': 'No folders found'}, status=404)
 
-        # Get the latest file based on modification time
-        latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(mp4_folderpath, f)))
+        # Get the latest folder based on modification time
+        latest_folder = max(folders, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
+        latest_folder_path = os.path.join(media_folderpath, latest_folder)
+        
+        # List all MP4 files inside the latest folder
+        mp4_files = [f for f in os.listdir(latest_folder_path) if f.endswith('.mp4')]
 
-        # Construct the media URL for the latest file
-        media_url = os.path.join(settings.MEDIA_URL, 'mp4s', latest_file).replace("\\", "/")
-        print("\nmedia url is :\n", media_url)
+        if not mp4_files:
+            return JsonResponse({'error': 'No MP4 files found in the latest folder'}, status=404)
+
+        # Assuming there's only one MP4 file in the latest folder, get its path
+        latest_mp4 = os.path.join(latest_folder_path, mp4_files[0])
+
+        # Construct the media URL for the latest MP4 file
+        media_url = os.path.join(settings.MEDIA_URL, 'processed_files', latest_folder, mp4_files[0]).replace("\\", "/")
+        print("\nMedia URL is:\n", media_url)
+        
         return JsonResponse({'latest_file': media_url})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
