@@ -9,27 +9,50 @@ from django.conf import settings
 from chat_project import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from .processFiles import process_files
+from chat.processFiles import process_files
+from chat.classes.ProcessingQueue import ProcessingQueue
+
 
 llm = Ollama(base_url='http://localhost:11434', model="mistral")
 
 # Define the base path for media files
 media_folderpath = os.path.join(settings.BASE_DIR, 'media', 'processed_files')
 
+# Initialize the processing queue
+processing_queue = ProcessingQueue()
 
 @csrf_exempt
 def process_mp4files(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            print("data is: \n", data)
-            selected_subject = data.get('subject', '')
+            selected_subject = data.get('subject', '')  # Get the subject from the request
             print(f"Selected subject: {selected_subject}")
-            response = process_files(selected_subject)  # Pass the data to the function
-            return response
+            
+            # Retrieve the latest MP4 file from the processed_files directory
+            mp4_files = [f for f in os.listdir(media_folderpath) if f.endswith('.mp4')]
+            if not mp4_files:
+                return JsonResponse({"success": False, "error": "No MP4 files found in the processed_files folder"})
+
+            # Assuming you want the most recent file
+            latest_mp4_file = max(mp4_files, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
+            mp4_file_path = os.path.join(media_folderpath, latest_mp4_file)
+            
+            print(f"Latest MP4 file path: {mp4_file_path}")
+
+            # Add the file to the processing queue with both arguments
+            processing_queue.add_to_queue(latest_mp4_file, mp4_file_path, selected_subject)
+
+            return JsonResponse({
+                "success": True,
+                "message": "File added to processing queue",
+                "mp4_filepath": mp4_file_path,
+                "filename": latest_mp4_file
+            })
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
     return JsonResponse({"success": False, "error": "Invalid request method"})
+
 
 def get_latest_mp4_filepath(request):
     try:

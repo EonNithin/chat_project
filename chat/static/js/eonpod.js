@@ -32,11 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await connectToOBS();
 });
 
-// Automatically disconnect from OBS on page unload
-//window.addEventListener("beforeunload", async () => {
-//    await disconnectFromOBS();
-//});
-
 // Function to get the CSRF token
 function getCookie(name) {
     let cookieValue = null;
@@ -74,7 +69,7 @@ async function toggleRecording() {
             progressBar.style.width = "0%"; // Reset progress bar
             isRecording = false;
             
-        // Call a function to convert saved mp4 recording file to mp3 file
+        // Call a function to process the latest MP4 recording file
         fetch('/process_mp4files/', {
             method: 'POST', // Ensure method is POST if you're sending data
             headers: {
@@ -86,21 +81,26 @@ async function toggleRecording() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('MP3 file path is:', data.mp3_filepath);
-                // You can now use the mp3_filepath variable as needed
+                console.log('MP4 file path is:', data.mp4_filepath);
+                // You can now use the mp4_filepath variable as needed
             } else {
-                console.error('Error converting MP4 to MP3:', data.error);
+                console.error('Error processing MP4 file:', data.error);
             }
         })
         .catch(error => {
             console.error('Error:', error);
         });
-            
+
         } catch (error) {
             console.error('Failed to stop recording:', error);
             alert('Failed to stop recording. Please refresh page and check your connection to OBS Studio');
         }
     } else {
+         // Check if a subject is selected
+        if (!selectedSubject) {
+            alert('Please select subject to start recording.');
+            return;
+        }
         // Start recording
         try {
             await obs.call('StartRecord');
