@@ -32,10 +32,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     await connectToOBS();
 });
 
-// Automatically disconnect from OBS on page unload
-//window.addEventListener("beforeunload", async () => {
-//    await disconnectFromOBS();
-//});
+// Function to get the CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 // Function to toggle recording state
 async function toggleRecording() {
@@ -57,26 +69,38 @@ async function toggleRecording() {
             progressBar.style.width = "0%"; // Reset progress bar
             isRecording = false;
             
-        // Call a function to convert saved mp4 recording file to mp3 file
-        fetch('/convert_mp4_to_mp3/')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('MP3 file path is:', data.mp3_filepath);
-                    // You can now use the mp3_filepath variable as needed
-                } else {
-                    console.error('Error converting MP4 to MP3:', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-            
+        // Call a function to process the latest MP4 recording file
+        fetch('/process_mp4files/', {
+            method: 'POST', // Ensure method is POST if you're sending data
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is sent with the request
+            },
+            body: JSON.stringify({ subject: selectedSubject }) // Send selectedSubject as part of request body
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('MP4 file path is:', data.mp4_filepath);
+                // You can now use the mp4_filepath variable as needed
+            } else {
+                console.error('Error processing MP4 file:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
         } catch (error) {
             console.error('Failed to stop recording:', error);
             alert('Failed to stop recording. Please refresh page and check your connection to OBS Studio');
         }
     } else {
+         // Check if a subject is selected
+        if (!selectedSubject) {
+            alert('Please select subject to start recording.');
+            return;
+        }
         // Start recording
         try {
             await obs.call('StartRecord');
@@ -141,23 +165,6 @@ function sendRecordingStatus(status) {
     }).catch(error => {
         console.error('Error in sending recording status:', error);
     });
-}
-
-// Function to get the CSRF token
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
 }
 
 async function toggleStreaming(){
@@ -250,26 +257,15 @@ function sendStreamingStatus(status) {
     });
 }
 
-// Function to get the CSRF token
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
+
+function aiChatPage(){
+    console.log("aiChatPage function")
+    window.location.href = '/ai_chatpage/';
 }
 
-function aiProcessing(){
-    window.location.href = '/ai_process/';
-}
+// Handling dropdown select subject
+
+let selectedSubject = '';
 
 function toggleDropdown() {
     document.getElementById("dropdown-content").classList.toggle("show");
@@ -279,6 +275,8 @@ function selectOption(option) {
     const dropdownLabel = document.getElementById("dropdown-label").children[0];
     if (dropdownLabel) {
         dropdownLabel.textContent = option;
+        selectedSubject = option; // Store the selected option
+        console.log(selectedSubject);
     } else {
         console.error('Dropdown label element not found.');
     }

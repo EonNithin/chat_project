@@ -9,192 +9,89 @@ from django.conf import settings
 from chat_project import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from moviepy.editor import VideoFileClip
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from summarizer.bert import Summarizer, TransformerSummarizer
-
-# Initialize Ollama outside the view
-llm = Ollama(
-    base_url='http://localhost:11434',
-    model="mistral"
-)
-
-# Initializing bert-summarizer model
-bert_model = Summarizer()
-
-# Initialize the model
-whisper_model = whisper.Whisper(model_path="/home/eon/Desktop/Whisper/whisper.cpp/models/ggml-base.en.bin")
-
-conversation_history = []
-
-mp3_folderpath = os.path.join(settings.BASE_DIR, "media", "mp3s")
-mp4_folderpath = os.path.join(settings.BASE_DIR, "media", "mp4s")
+from chat.processFiles import process_files
+from chat.classes.ProcessingQueue import ProcessingQueue
 
 
-def login_page(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            # Redirect to a success page
-            return redirect('eonpod')  # Replace with your desired redirect URL
-        else:
-            # Handle invalid login attempt (e.g., display error message)
-            context = {'error_message': 'Invalid username or password'}
-            return render(request, 'login_page.html', context)
+llm = Ollama(base_url='http://localhost:11434', model="mistral")
 
-    # Handle GET request (display the login form)
-    context = {}  # Create an empty context for the login form template
-    print("Context in login_page is as below:\n", context)
-    return render(request, 'login_page.html', context)
+# Define the base path for media files
+media_folderpath = os.path.join(settings.BASE_DIR, 'media', 'processed_files')
+
+# Initialize the processing queue
+processing_queue = ProcessingQueue()
+
+@csrf_exempt
+def process_mp4files(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            selected_subject = data.get('subject', '')  # Get the subject from the request
+            print(f"Selected subject: {selected_subject}")
+            
+            # Retrieve the latest MP4 file from the processed_files directory
+            mp4_files = [f for f in os.listdir(media_folderpath) if f.endswith('.mp4')]
+            if not mp4_files:
+                return JsonResponse({"success": False, "error": "No MP4 files found in the processed_files folder"})
+
+            # Assuming you want the most recent file
+            latest_mp4_file = max(mp4_files, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
+            mp4_file_path = os.path.join(media_folderpath, latest_mp4_file)
+            
+            print(f"Latest MP4 file path: {mp4_file_path}")
+
+            # Add the file to the processing queue with both arguments
+            processing_queue.add_to_queue(latest_mp4_file, mp4_file_path, selected_subject)
+
+            return JsonResponse({
+                "success": True,
+                "message": "File added to processing queue",
+                "mp4_filepath": mp4_file_path,
+                "filename": latest_mp4_file
+            })
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+    return JsonResponse({"success": False, "error": "Invalid request method"})
 
 
 def get_latest_mp4_filepath(request):
     try:
-        # List all files in the directory
-        files = [f for f in os.listdir(mp4_folderpath) if os.path.isfile(os.path.join(mp4_folderpath, f))]
+        # List all folders in the media directory
+        folders = [f for f in os.listdir(media_folderpath) if os.path.isdir(os.path.join(media_folderpath, f))]
         
-        if not files:
-            return JsonResponse({'error': 'No files found'}, status=404)
+        if not folders:
+            return JsonResponse({'error': 'No folders found'}, status=404)
 
-        # Get the latest file based on modification time
-        latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(mp4_folderpath, f)))
+        # Get the latest folder based on modification time
+        latest_folder = max(folders, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
+        latest_folder_path = os.path.join(media_folderpath, latest_folder)
+        
+        # List all MP4 files inside the latest folder
+        mp4_files = [f for f in os.listdir(latest_folder_path) if f.endswith('.mp4')]
 
-        # Construct the media URL for the latest file
-        media_url = os.path.join(settings.MEDIA_URL, 'mp4s', latest_file).replace("\\", "/")
-        print("\nmedia url is :\n", media_url)
+        if not mp4_files:
+            return JsonResponse({'error': 'No MP4 files found in the latest folder'}, status=404)
+
+        # Assuming there's only one MP4 file in the latest folder, get its path
+        latest_mp4 = os.path.join(latest_folder_path, mp4_files[0])
+
+        # Construct the media URL for the latest MP4 file
+        media_url = os.path.join(settings.MEDIA_URL, 'processed_files', latest_folder, mp4_files[0]).replace("\\", "/")
+        print("\nMedia URL is:\n", media_url)
+        
         return JsonResponse({'latest_file': media_url})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-def get_latest_mp3_filepath(directory):
-    # Get a list of all files in the directory
-    files = [os.path.join(directory, file) for file in os.listdir(directory)]
-    
-    # Filter out directories (if any)
-    files = [file for file in files if os.path.isfile(file)]
-    
-    # Sort files based on modification time (descending order)
-    files.sort(key=os.path.getmtime, reverse=True)
-    
-    # Return the path of the most recent file
-    if files:
-        return files[0]
-    else:
-        return None
-
-def convert_mp4_to_mp3(request, codec="libmp3lame"):
-    files = glob.glob(os.path.join(mp4_folderpath, '*.mp4'))
-    files.sort(key=os.path.getmtime, reverse=True)
-    input_mp4 = files[0] if files else None
-
-    if not input_mp4:
-        print("No MP4 file to convert.")
-        return "Error No file found"
-    try:
-        # Get filename without extension from input path
-        filename, _ = os.path.splitext(os.path.basename(input_mp4))
-
-        # Construct output MP3 filename with .mp3 extension
-        mp3_filepath = os.path.join(mp3_folderpath, filename + ".mp3")
-        print("mp3_filepath:\n",mp3_filepath)
-        # Load the MP4 file
-        video_clip = VideoFileClip(input_mp4)
-        print("working gng next1")
-        # Extract audio from the video
-        audio_clip = video_clip.audio
-        print("working gng next2")
-        
-        # Write the audio to an MP3 file with specified codec
-        audio_clip.write_audiofile(mp3_filepath, codec=codec)
-        print(f"Successfully converted {input_mp4} to {mp3_filepath}")
-
-        return JsonResponse({"success": True, "mp3_filepath": mp3_filepath})
-    except Exception as e:
-        print(f"Error converting MP4: {e}")
-        return JsonResponse({"success": False, "error": str(e)})
- 
-def transcribe_latest_file(latest_file):
-    try:
-        result = whisper_model.transcribe(latest_file)
-        print("\nresponse from whisper:\n", result["text"])
-        # Return the transcribed text
-        return result["text"]
-    except Exception as e:
-        print("Error transcribing uploaded file:", e)
-        return None
-
-def summarize_transcription(transcribed_text):
-    bert_summary = ''.join(bert_model(body = transcribed_text, min_length = 60))
-    return bert_summary
-
-def transcribe_mp3(request):
-    if request.method == 'GET':
-        global mp3_folderpath
-        latest_file = get_latest_mp3_filepath(mp3_folderpath)
-        print("\nLatest filepath:\n", latest_file)
-        transcribed_text = transcribe_latest_file(latest_file)
-        if transcribed_text:
-            print("transcribed text is :\n", transcribed_text)
-            bert_summary = summarize_transcription(transcribed_text)
-            print("Response summary is \n", bert_summary)
-            response_data = {
-                'file_path': latest_file,
-                'transcribed_text': transcribed_text,
-                'response_text': bert_summary,
-            }
-            return JsonResponse(response_data)
-        else:
-            return JsonResponse({'error': 'Error transcribing uploaded file'}, status=500)
-    else:
-        return HttpResponseBadRequest('Invalid request method')
-
-@csrf_exempt
-def transcribe_selected_mp3(request):
-    if request.method == 'POST':
-        # Check if a file is uploaded
-        if 'file' not in request.FILES:
-            return JsonResponse({'error': 'No file uploaded'}, status=400)
-
-        uploaded_file = request.FILES['file']
-        file_path = os.path.join(mp3_folderpath, uploaded_file.name)
-        print("\nfile uploaded is :\n", file_path)
-        # Save the uploaded file
-        with open(file_path, 'wb+') as destination:
-            for chunk in uploaded_file.chunks():
-                destination.write(chunk)
-                
-        # Transcribe the uploaded file using Whisper
-        try:
-            result =  whisper_model.transcribe(file_path)
-            transcribed_text = result["text"]
-            print("\nresult of transcribed selected file:\n", transcribed_text)
-
-            # Generate a response from bert-summerizer
-            bert_summary = summarize_transcription(transcribed_text)
-            print("Response summary is \n", bert_summary)
-            response_data = {
-                'transcribed_text': transcribed_text,
-                'response_text': bert_summary,
-            }
-            return JsonResponse(response_data)
-
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-
-    return HttpResponseBadRequest('Invalid request method')
+conversation_history = []
 
 def ollama_generate_response(question):
     try:
         global conversation_history
-        conversation_history.append(question)
-        full_prompt = "\n".join(conversation_history)
-        response_text = llm.invoke(full_prompt)
-        print("success invoking ollama mistral model")
-        conversation_history.append(response_text)
+        # full_prompt = "\n".join(conversation_history)
+        response_text = llm.invoke(question)
+        # print("success invoking ollama mistral model")
+        #conversation_history.append(response_text)
         print("Response:\n", response_text, "\n")
         return response_text
     except Exception as e:
@@ -218,11 +115,6 @@ def generate_response(request):
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-#@login_required
-def ai_process(request):
-    return render(request, 'ai_process.html')
-
-#@login_required
 def ai_chatpage(request):
     return render(request, 'ai_chatpage.html')
 
@@ -252,7 +144,6 @@ def update_streaming_status(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failed'}, status=400)
 
-#@login_required
 def eonpod(request):
     global recording_status, streaming_status
     return render(request, 'eonpod.html', {

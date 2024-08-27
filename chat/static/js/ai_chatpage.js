@@ -9,15 +9,6 @@ function scrollToBottom() {
     console.log("scrolling to bottom");
 }
 
-// function autoResize(textarea) {
-//     textarea.style.height = "auto"; // Reset height to auto
-//     textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px"; // Set height based on scrollHeight, limited to 100px
-// }
-
-// document.getElementById('question').addEventListener('input', function() {
-//     autoResize(this);
-// });
-
 var dotsAnimation = document.getElementById('wave');
 function startAnimation() {
     dotsAnimation.style.display = 'inline'; // Make the animation visible
@@ -40,11 +31,18 @@ document.getElementById('promptForm').addEventListener('submit', function(event)
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('question').value = ''; // Clear input value
-        stopAnimation();
-        document.getElementById('conversationHistory').innerHTML += '<span style="color: black; font-size:30px">' + data.response + '</span><br><hr>';
-        setTimeout(scrollToBottom, 100);
-    })
+    document.getElementById('question').value = ''; // Clear input value
+    stopAnimation();
+    
+    // Convert newlines to <br> tags for proper HTML rendering
+    const formattedResponse = data.response.replace(/\n/g, '<br>');
+    
+    // Insert the formatted response into the conversation history
+    document.getElementById('conversationHistory').innerHTML += 
+        '<span style="color: black; font-size:30px">' + formattedResponse + '</span><br><hr>';
+    
+    setTimeout(scrollToBottom, 100);
+})
     .catch(error => console.error('Error:', error));
 });
 
