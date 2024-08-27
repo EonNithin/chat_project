@@ -45,5 +45,5 @@ class ProcessingQueue:
                     print(f"File processed and removed from queue: {file_name}")
 
             # Debug print to monitor thread execution
-            print("Sleeping for 10 seconds...")
-            time.sleep(10)
+            print("Sleeping for 1000 seconds...")
+            time.sleep(1000)
