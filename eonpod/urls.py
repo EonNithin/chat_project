@@ -20,6 +20,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('chat.urls')),  # Include the URL patterns from the 'chat' app
+    path('', include('pod.urls')),  # Include the URL patterns from the 'chat' app
 ]
 

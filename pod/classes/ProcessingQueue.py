@@ -1,7 +1,7 @@
 import threading
 import time
 import os
-from chat.processFiles import process_files
+from pod.processFiles import process_files
 
 class ProcessingQueue:
     def __init__(self):

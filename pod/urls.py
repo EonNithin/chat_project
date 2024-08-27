@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from chat.views import eonpod, ai_chatpage, process_mp4files, generate_response, get_latest_mp4_filepath, update_recording_status, update_streaming_status
+from pod.views import eonpod, ai_chatpage, process_mp4files, generate_response, get_latest_mp4_filepath, update_recording_status, update_streaming_status
 
 urlpatterns = [
     path('', eonpod, name='eonpod'),

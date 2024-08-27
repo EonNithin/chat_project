@@ -6,11 +6,10 @@ from django.http import JsonResponse
 from langchain_community.llms import Ollama
 from whisper_cpp_python import whisper
 from django.conf import settings
-from chat_project import settings
+from eonpod import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from chat.processFiles import process_files
-from chat.classes.ProcessingQueue import ProcessingQueue
+from pod.classes.ProcessingQueue import ProcessingQueue
 
 
 llm = Ollama(base_url='http://localhost:11434', model="mistral")
