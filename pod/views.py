@@ -10,15 +10,48 @@ from eonpod import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from pod.classes.ProcessingQueue import ProcessingQueue
-
+from pod.classes.Recorder import Recorder
+import time
 
 llm = Ollama(base_url='http://localhost:11434', model="mistral")
 
 # Define the base path for media files
 media_folderpath = os.path.join(settings.BASE_DIR, 'media', 'processed_files')
 
+# Initialize the recorder instance
+recorder = Recorder()
+
 # Initialize the processing queue
 processing_queue = ProcessingQueue()
+
+@csrf_exempt
+def start_recording_view(request):
+    if request.method == "POST":
+        try:
+            recorder.start_recording()
+            return JsonResponse({"success": True, "message": "Recording started."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    return JsonResponse({"success": False, "error": "Invalid request method."})
+
+@csrf_exempt
+def stop_recording_view(request):
+    if request.method == "POST":
+        try:
+            recorder.stop_recording()
+            file_info = recorder.get_file_info()
+            return JsonResponse({
+                "success": True,
+                "message": "Recording stopped.",
+                "filename": file_info["filename"],
+                "filepath": file_info["filepath"]
+            })
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    return JsonResponse({"success": False, "error": "Invalid request method."})
+
 
 @csrf_exempt
 def process_mp4files(request):
