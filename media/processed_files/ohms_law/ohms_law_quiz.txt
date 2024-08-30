@@ -1,0 +1,18 @@
+1. What is the goal of this experiment?
+A) To determine the dependence of power across a resistor and the current flowing through it.
+B) To calculate the resistance by measuring the slope of a graph passing through the origin.
+C) To observe the relationship between voltage and current in a graph for a fixed temperature.
+D) To measure the nickel wire resistance using the voltmeter reading.
+Answer: B) To calculate the resistance by measuring the slope of a graph passing through the origin.
+2. How can you calculate the resistance in this experiment?
+A) By measuring the voltage and current values, then applying Ohm's law.
+B) By observing the graph of voltage vs. current, taking note of the slope that passes through the origin.
+C) By comparing the nickel wire resistance with the voltmeter reading.
+D) By measuring the power across a resistor and the current flowing through it.
+Answer: B) By observing the graph of voltage vs. current, taking note of the slope that passes through the origin.
+3. What does the graph in this experiment represent?
+A) The relationship between voltage and power across a resistor.
+B) The relationship between current and resistance for a given temperature.
+C) The relationship between voltage and current for a fixed temperature, which is passing through the origin.
+D) The relationship between voltage and resistance at different temperatures.
+Answer: C) The relationship between voltage and current for a fixed temperature, which is passing through the origin.
