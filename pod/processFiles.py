@@ -1,4 +1,3 @@
-import glob
 import os
 import json
 from django.conf import settings
@@ -7,7 +6,6 @@ from whisper_cpp_python import whisper
 from summarizer.bert import Summarizer
 from langchain_community.llms import Ollama
 from django.http import JsonResponse
-import socket
 
 # Initialize the models
 whisper_model = whisper.Whisper(model_path=os.path.join(settings.BASE_DIR, 'models', 'ggml-base.en.bin'))
@@ -16,13 +14,6 @@ llm = Ollama(base_url='http://localhost:11434', model="mistral")
 
 # Define the base path for media files
 media_folderpath = os.path.join(settings.BASE_DIR, 'media', 'processed_files')
-
-def get_device_name():
-    try:
-        return socket.gethostname()
-    except Exception as e:
-        print(f"Error getting device name: {e}")
-        return "unknown_device"
 
 def summarize_transcription(transcribed_text):
     return ''.join(bert_model(body=transcribed_text, min_length=30))
@@ -61,23 +52,15 @@ def load_text_from_file(txt_filepath):
         print(f"\nError loading text from file {txt_filepath}: {e}\n")
         return ""
 
-
-
-def process_files(mp4_filename, mp4_filepath, subject, codec="libmp3lame"):
+def process_files(mp4_filename, mp4_filepath, folder_path, codec="libmp3lame"):
     try:
-        # Get device name
-        device_name = get_device_name()
- 
-        # Define the folder path based on the provided filename and subject
-        custom_foldername = f"{device_name}_{os.path.splitext(mp4_filename)[0]}_{subject}"
-        folder_path = os.path.join(media_folderpath, custom_foldername)
-
+        print("folder path where processed files are being saved:\n",folder_path)
         # Define the file paths for the expected outputs
-        processed_mp4_filepath = os.path.join(folder_path, f"{custom_foldername}.mp4")
-        mp3_filepath = os.path.join(folder_path, f"{custom_foldername}.mp3")
-        transcription_txt_filepath = os.path.join(folder_path, f"{custom_foldername}_transcription.txt")
-        summary_txt_filepath = os.path.join(folder_path, f"{custom_foldername}_summary.txt")
-        quiz_txt_filepath = os.path.join(folder_path, f"{custom_foldername}_quiz.txt")
+        processed_mp4_filepath = os.path.join(folder_path, mp4_filename)
+        mp3_filepath = os.path.join(folder_path, f"{os.path.splitext(mp4_filename)[0]}.mp3")
+        transcription_txt_filepath = os.path.join(folder_path, f"{os.path.splitext(mp4_filename)[0]}_transcription.txt")
+        summary_txt_filepath = os.path.join(folder_path, f"{os.path.splitext(mp4_filename)[0]}_summary.txt")
+        quiz_txt_filepath = os.path.join(folder_path, f"{os.path.splitext(mp4_filename)[0]}_quiz.txt")
 
         # Create the folder if it doesn't exist
         os.makedirs(folder_path, exist_ok=True)

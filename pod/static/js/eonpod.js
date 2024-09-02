@@ -57,6 +57,7 @@ async function toggleRecording() {
     if (isRecording) {
         // Stop recording
         try {
+            console.log("Attempting to stop recording...");
             let response = await fetch('/stop_recording_view/', {
                 method: 'POST',
                 headers: {
@@ -65,10 +66,12 @@ async function toggleRecording() {
                 }
             });
 
+            console.log("Stop recording response received. Status:", response.status);
             let data = await response.json();
+            console.log("Stop recording response data:", data);
 
             if (data.success) {
-                console.log(data.message);
+                console.log("Recording stopped successfully:", data.message);
                 sendRecordingStatus(false);
                 startRecordButton.style.display = "block";
                 stopRecordButton.style.display = "none";
@@ -76,40 +79,42 @@ async function toggleRecording() {
                 progressBar.style.visibility = "hidden"; // Hide progress bar
                 progressBar.style.width = "0%"; // Reset progress bar
                 isRecording = false;
-                
-                // Call a function to process the latest MP4 recording file
+
+                console.log("Attempting to process the latest MP4 recording...");
                 let processResponse = await fetch('/process_mp4files/', {
-                    method: 'POST', // Ensure method is POST since you're sending data
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is sent with the request
+                        'X-CSRFToken': getCookie('csrftoken')
                     },
-                    body: JSON.stringify({ subject: selectedSubject }) // Send selectedSubject as part of request body
+                    body: JSON.stringify({ subject: selectedSubject })
                 });
 
+                console.log("Process MP4 response received. Status:", processResponse.status);
                 let processData = await processResponse.json();
+                console.log("Process MP4 response data:", processData);
 
                 if (processData.success) {
-                    console.log('MP4 file path is:', processData.mp4_filepath);
-                    // You can now use the mp4_filepath variable as needed
+                    console.log('MP4 file processed successfully. File path:', processData.mp4_filepath);
                 } else {
                     console.error('Error processing MP4 file:', processData.error);
                 }
             } else {
-                console.error("error message in stop recording:"+ data.error);
+                console.error("Error stopping recording:", data.error);
             }
 
         } catch (error) {
             console.error('Failed to stop recording:', error);
-            alert('Failed to stop recording. Please refresh page and check your connection to OBS Studio');
+            alert('Failed to stop recording. Please refresh the page and check your connection to OBS Studio');
         }
     } else {
         // Check if a subject is selected
         if (!selectedSubject) {
-            alert('Please select subject to start recording.');
+            alert('Please select a subject to start recording.');
             return;
         }
 
+        console.log("Attempting to start recording...");
         // Start recording
         try {
             let response = await fetch('/start_recording_view/', {
@@ -117,13 +122,16 @@ async function toggleRecording() {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
-                }
+                },
+                body: JSON.stringify({ subject: selectedSubject })
             });
 
+            console.log("Start recording response received. Status:", response.status);
             let data = await response.json();
+            console.log("Start recording response data:", data);
 
             if (data.success) {
-                console.log(data.message);
+                console.log("Recording started successfully:", data.message);
                 sendRecordingStatus(true);
                 startRecordButton.style.display = "none";
                 stopRecordButton.style.display = "block";
@@ -131,12 +139,12 @@ async function toggleRecording() {
                 progressBar.style.visibility = "visible"; // Show progress bar
                 isRecording = true;
             } else {
-                console.error("error message in start recording :"+ data.error);
+                console.error("Error starting recording:", data.error);
             }
 
         } catch (error) {
             console.error('Failed to start recording:', error);
-            alert('Failed to start recording. Please refresh page and check you are connected to OBS Studio');
+            alert('Failed to start recording. Please refresh the page and check you are connected to OBS Studio');
         }
     }
 }

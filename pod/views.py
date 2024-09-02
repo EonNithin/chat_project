@@ -28,7 +28,10 @@ processing_queue = ProcessingQueue()
 def start_recording_view(request):
     if request.method == "POST":
         try:
-            recorder.start_recording()
+            data = json.loads(request.body)
+            selected_subject = data.get('subject', '')  # Get the subject from the request
+            print(f"Selected subject: {selected_subject}")
+            recorder.start_recording(selected_subject)  # Pass the subject to the start_recording method
             return JsonResponse({"success": True, "message": "Recording started."})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
@@ -52,7 +55,6 @@ def stop_recording_view(request):
 
     return JsonResponse({"success": False, "error": "Invalid request method."})
 
-
 @csrf_exempt
 def process_mp4files(request):
     if request.method == 'POST':
@@ -60,11 +62,11 @@ def process_mp4files(request):
             data = json.loads(request.body)
             selected_subject = data.get('subject', '')  # Get the subject from the request
             print(f"Selected subject: {selected_subject}")
-            
+            time.sleep(10)
             # Retrieve the latest MP4 file from the processed_files directory
             mp4_files = [f for f in os.listdir(media_folderpath) if f.endswith('.mp4')]
             if not mp4_files:
-                return JsonResponse({"success": False, "error": "No MP4 files found in the processed_files folder"})
+                return JsonResponse({"success": False, "error": "No MP4 files found in the processed_files folder" + media_folderpath})
 
             # Assuming you want the most recent file
             latest_mp4_file = max(mp4_files, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
@@ -82,7 +84,7 @@ def process_mp4files(request):
                 "filename": latest_mp4_file
             })
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+            return JsonResponse({"success": False, "error": str(e) + media_folderpath})
     return JsonResponse({"success": False, "error": "Invalid request method"})
 
 

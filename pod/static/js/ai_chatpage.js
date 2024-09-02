@@ -1,5 +1,5 @@
 function aiSpeechRecognitionPage(){
-    window.location.href = '/ai_process/';
+    window.location.href = '';
 }
 
 // Function to scroll to the end of the content inside a div
