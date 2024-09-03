@@ -6,9 +6,10 @@ venv
 .env
 
 __pycache__/*
-chat/__pycache__/*
-chat_project/__pycache__/*
-chat/migrations/__pycache__/*
+pod/__pycache__/*
+eonpod/__pycache__/*
+pod/classes/__pycache__/*
+pod/migrations/__pycache__/*
 
 # Ignore specific model file
 models/ggml-base.en.bin
