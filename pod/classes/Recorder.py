@@ -4,6 +4,7 @@ import signal
 from datetime import datetime
 from django.conf import settings
 import socket
+import time
 
 # Define the base path for media files
 media_folderpath = os.path.join(settings.BASE_DIR, 'media', 'processed_files')
@@ -72,14 +73,26 @@ class Recorder:
         print(f"Recording started: {self.filename}, \n, {self.filepath}")
 
     def stop_recording(self):
-        if self.process and self.process.poll() is None:
-            self.process.stdin.write('q')
-            self.process.stdin.flush()
+        try:
+            if self.process and self.process.poll() is None:
+                try:
+                    # Send 'q' to the FFmpeg process to stop recording gracefully
+                    self.process.communicate(input=b'q')
+                    print("Sent 'q' to stop recording.")
+                except (BrokenPipeError, ValueError) as e:
+                    print(f"Error sending 'q' to the process: {e}")
 
-            self.process.wait()
-            print("Recording stopped.")
-        else:
-            print("No recording in progress.")
+                # Wait for the process to finish and clean up
+                self.process.wait()
+                print("Recording stopped.")
+            else:
+                print("No recording in progress.")
+        except Exception as e:
+            print(f"Unexpected error stopping recording: {e}")
+        finally:
+            # Clean up the process reference to avoid reuse
+            self.process = None
+
 
     def get_file_info(self):
         return {"filename": self.filename, "filepath": self.filepath}
