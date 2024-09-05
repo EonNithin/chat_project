@@ -11,5 +11,8 @@ eonpod/__pycache__/*
 pod/classes/__pycache__/*
 pod/migrations/__pycache__/*
 
+
+# Ignore media files
+media/processed_files/*
 # Ignore specific model file
 models/ggml-base.en.bin
