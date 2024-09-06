@@ -7,53 +7,92 @@ from langchain_community.llms import Ollama
 from whisper_cpp_python import whisper
 from django.conf import settings
 from eonpod import settings
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.clickjacking import xframe_options_exempt
 from pod.classes.ProcessingQueue import ProcessingQueue
 from pod.classes.Recorder import Recorder
 import time
+import cv2
+import numpy
 
 llm = Ollama(base_url='http://localhost:11434', model="mistral")
+
 
 # Define the base path for media files
 media_folderpath = os.path.join(settings.BASE_DIR, 'media', 'processed_files')
 
+
 # Initialize the recorder instance
 recorder = Recorder()
+
 
 # Initialize the processing queue
 processing_queue = ProcessingQueue()
 
+
 @csrf_exempt
 def start_recording_view(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            selected_subject = data.get('subject', '')  # Get the subject from the request
-            print(f"Selected subject: {selected_subject}")
-            recorder.start_recording(selected_subject)  # Pass the subject to the start_recording method
-            return JsonResponse({"success": True, "message": "Recording started."})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+   if request.method == "POST":
+       try:
+           recorder.start_recording()
+           recorder.start_screen_grab()
+           return JsonResponse({"success": True, "message": "Recording started."})
+       except Exception as e:
+           return JsonResponse({"success": False, "error": str(e)})
 
-    return JsonResponse({"success": False, "error": "Invalid request method."})
+
+   return JsonResponse({"success": False, "error": "Invalid request method."})
+
+
+
+
 
 @csrf_exempt
 def stop_recording_view(request):
-    if request.method == "POST":
-        try:
-            recorder.stop_recording()
-            file_info = recorder.get_file_info()
-            return JsonResponse({
-                "success": True,
-                "message": "Recording stopped.",
-                "filename": file_info["filename"],
-                "filepath": file_info["filepath"]
-            })
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+   if request.method == "POST":
+       try:
+           recorder.stop_recording()
+           recorder.stop_screen_grab()
+           file_info = recorder.get_file_info()
+           return JsonResponse({
+               "success": True,
+               "message": "Recording stopped.",
+               "filename": file_info["filename"],
+               "filepath": file_info["filepath"]
+           })
+       except Exception as e:
+           return JsonResponse({"success": False, "error": str(e)})
 
-    return JsonResponse({"success": False, "error": "Invalid request method."})
+
+   return JsonResponse({"success": False, "error": "Invalid request method."})
+
+
+
+@csrf_exempt
+@xframe_options_exempt
+def video_stream(request):
+    # Open the video capture (replace with your RTSP URL)
+    video_source = 'rtsp://admin:hik@9753@192.168.0.252:554/Streaming/Channels/101'
+    cap = cv2.VideoCapture(video_source)
+
+    # Define a generator function to stream the video frames
+    def generate():
+        while True:
+            success, frame = cap.read()
+            if not success:
+                break
+            # Encode the frame as JPEG
+            _, buffer = cv2.imencode('.jpg', frame)
+            frame_data = buffer.tobytes()
+            # Yield the frame data in the correct format
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' +
+                   frame_data + b'\r\n')
+
+    return StreamingHttpResponse(generate(), content_type='multipart/x-mixed-replace; boundary=frame')
+
+
 
 @csrf_exempt
 def process_mp4files(request):
@@ -63,14 +102,26 @@ def process_mp4files(request):
             selected_subject = data.get('subject', '')  # Get the subject from the request
             print(f"Selected subject: {selected_subject}")
             time.sleep(10)
-            # Retrieve the latest MP4 file from the processed_files directory
-            mp4_files = [f for f in os.listdir(media_folderpath) if f.endswith('.mp4')]
-            if not mp4_files:
-                return JsonResponse({"success": False, "error": "No MP4 files found in the processed_files folder" + media_folderpath})
 
-            # Assuming you want the most recent file
-            latest_mp4_file = max(mp4_files, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
-            mp4_file_path = os.path.join(media_folderpath, latest_mp4_file)
+            # List all folders in the processed_files directory
+            folders = [f for f in os.listdir(media_folderpath) if os.path.isdir(os.path.join(media_folderpath, f))]
+            
+            if not folders:
+                return JsonResponse({"success": False, "error": "No folders found in the processed_files directory"})
+
+            # Get the latest folder based on modification time
+            latest_folder = max(folders, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
+            latest_folder_path = os.path.join(media_folderpath, latest_folder)
+            
+            # List all MP4 files inside the latest folder
+            mp4_files = [f for f in os.listdir(latest_folder_path) if f.endswith('.mp4')]
+
+            if not mp4_files:
+                return JsonResponse({"success": False, "error": "No MP4 files found in the latest folder"})
+
+            # Assuming you want the most recent MP4 file
+            latest_mp4_file = max(mp4_files, key=lambda f: os.path.getmtime(os.path.join(latest_folder_path, f)))
+            mp4_file_path = os.path.join(latest_folder_path, latest_mp4_file)
             
             print(f"Latest MP4 file path: {mp4_file_path}")
 
@@ -89,98 +140,116 @@ def process_mp4files(request):
 
 
 def get_latest_mp4_filepath(request):
-    try:
-        # List all folders in the media directory
-        folders = [f for f in os.listdir(media_folderpath) if os.path.isdir(os.path.join(media_folderpath, f))]
-        
-        if not folders:
-            return JsonResponse({'error': 'No folders found'}, status=404)
+   try:
+       # List all folders in the media directory
+       folders = [f for f in os.listdir(media_folderpath) if os.path.isdir(os.path.join(media_folderpath, f))]
+      
+       if not folders:
+           return JsonResponse({'error': 'No folders found'}, status=404)
 
-        # Get the latest folder based on modification time
-        latest_folder = max(folders, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
-        latest_folder_path = os.path.join(media_folderpath, latest_folder)
-        
-        # List all MP4 files inside the latest folder
-        mp4_files = [f for f in os.listdir(latest_folder_path) if f.endswith('.mp4')]
 
-        if not mp4_files:
-            return JsonResponse({'error': 'No MP4 files found in the latest folder'}, status=404)
+       # Get the latest folder based on modification time
+       latest_folder = max(folders, key=lambda f: os.path.getmtime(os.path.join(media_folderpath, f)))
+       latest_folder_path = os.path.join(media_folderpath, latest_folder)
+      
+       # List all MP4 files inside the latest folder
+       mp4_files = [f for f in os.listdir(latest_folder_path) if f.endswith('.mp4')]
 
-        # Assuming there's only one MP4 file in the latest folder, get its path
-        latest_mp4 = os.path.join(latest_folder_path, mp4_files[0])
 
-        # Construct the media URL for the latest MP4 file
-        media_url = os.path.join(settings.MEDIA_URL, 'processed_files', latest_folder, mp4_files[0]).replace("\\", "/")
-        print("\nMedia URL is:\n", media_url)
-        
-        return JsonResponse({'latest_file': media_url})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+       if not mp4_files:
+           return JsonResponse({'error': 'No MP4 files found in the latest folder'}, status=404)
+
+
+       # Assuming there's only one MP4 file in the latest folder, get its path
+       latest_mp4 = os.path.join(latest_folder_path, mp4_files[0])
+
+
+       # Construct the media URL for the latest MP4 file
+       media_url = os.path.join(settings.MEDIA_URL, 'processed_files', latest_folder, mp4_files[0]).replace("\\", "/")
+       print("\nMedia URL is:\n", media_url)
+      
+       return JsonResponse({'latest_file': media_url})
+   except Exception as e:
+       return JsonResponse({'error': str(e)}, status=500)
+
 
 conversation_history = []
 
+
 def ollama_generate_response(question):
-    try:
-        global conversation_history
-        # full_prompt = "\n".join(conversation_history)
-        response_text = llm.invoke(question)
-        # print("success invoking ollama mistral model")
-        #conversation_history.append(response_text)
-        print("Response:\n", response_text, "\n")
-        return response_text
-    except Exception as e:
-        return "error generating response: {e}"
+   try:
+       global conversation_history
+       # full_prompt = "\n".join(conversation_history)
+       response_text = llm.invoke(question)
+       # print("success invoking ollama mistral model")
+       #conversation_history.append(response_text)
+       print("Response:\n", response_text, "\n")
+       return response_text
+   except Exception as e:
+       return "error generating response: {e}"
+
 
 @csrf_exempt
 def generate_response(request):
-    if request.method == 'POST':
-        try:
-            question = request.POST.get('question', '')
-            if not question:
-                print("POST data is empty or question is not in POST data.")
-                print("Request body:\n", request.body.decode('utf-8'))
-                print("Request POST:\n", request.POST)
-            print("Question is : \n", question)
-            response = ollama_generate_response(question)
-            print("Response is : \n", response)
-            return JsonResponse({'question': question, 'response': response})
-        except Exception as e:
-            print(f"Error processing request: {e}")
-            return JsonResponse({'error': str(e)}, status=500)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+   if request.method == 'POST':
+       try:
+           question = request.POST.get('question', '')
+           if not question:
+               print("POST data is empty or question is not in POST data.")
+               print("Request body:\n", request.body.decode('utf-8'))
+               print("Request POST:\n", request.POST)
+           print("Question is : \n", question)
+           response = ollama_generate_response(question)
+           print("Response is : \n", response)
+           return JsonResponse({'question': question, 'response': response})
+       except Exception as e:
+           print(f"Error processing request: {e}")
+           return JsonResponse({'error': str(e)}, status=500)
+   return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 def ai_chatpage(request):
-    return render(request, 'ai_chatpage.html')
+   return render(request, 'ai_chatpage.html')
+
 
 recording_status = False
 
+
 @csrf_exempt
 def update_recording_status(request):
-    global recording_status
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        print("data:", data)
-        recording_status = data.get('is_recording')
-        print("recording status inside:",recording_status)
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'failed'}, status=400)
+   global recording_status
+   if request.method == 'POST':
+       data = json.loads(request.body)
+       print("data:", data)
+       recording_status = data.get('is_recording')
+       print("recording status inside:",recording_status)
+       return JsonResponse({'status': 'success'})
+   return JsonResponse({'status': 'failed'}, status=400)
+
 
 streaming_status = False
 
+
 @csrf_exempt
 def update_streaming_status(request):
-    global streaming_status
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        print("data:", data)
-        streaming_status = data.get('is_streaming', False)
-        print("streaming status inside:",streaming_status)
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'failed'}, status=400)
+   global streaming_status
+   if request.method == 'POST':
+       data = json.loads(request.body)
+       print("data:", data)
+       streaming_status = data.get('is_streaming', False)
+       print("streaming status inside:",streaming_status)
+       return JsonResponse({'status': 'success'})
+   return JsonResponse({'status': 'failed'}, status=400)
+
+def start_preview():
+    recorder.start_preview()
+
 
 def eonpod(request):
-    global recording_status, streaming_status
-    return render(request, 'eonpod.html', {
-        'is_recording': recording_status,
-        'is_streaming': streaming_status
-    })
+   start_preview()
+   global recording_status, streaming_status
+   return render(request, 'eonpod.html', {
+       'is_recording': recording_status,
+       'is_streaming': streaming_status
+   })
+
